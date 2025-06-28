@@ -38,21 +38,37 @@ const generateInfographicImageFlow = ai.defineFlow(
     inputSchema: GenerateInfographicImageInputSchema,
     outputSchema: GenerateInfographicImageOutputSchema,
   },
-  async ({ structure }) => {
-    const {media} = await ai.generate({
-      model: 'googleai/gemini-2.0-flash-preview-image-generation',
-      prompt: `You are a world-class graphic designer specializing in data visualization. Your sole task is to create a professional, ultra-high-resolution infographic based *only* on the detailed structure provided below.
+  async ({ summary, concepts, relationships, structure }) => {
+    const conceptsList = concepts.map(c => `- ${c}`).join('\n');
+    const relationshipsList = relationships.map(r => `- ${r}`).join('\n');
 
-**Infographic Structure to Render:**
+    const prompt = `You are a world-class graphic designer specializing in data visualization. Your sole task is to create a professional, ultra-high-resolution infographic. You are an expert in creating clean, modern, vector-style graphics with perfectly legible text. You never cut off text or make spelling errors.
+
+Create an infographic based on the following information.
+
+**Key Information to Render:**
+*   **Summary:** ${summary}
+*   **Key Concepts:**
+${conceptsList}
+*   **Relationships:**
+${relationshipsList}
+
+**Suggested Structure:**
+Use the following description as a guide for the layout:
 ${structure}
 
 **CRITICAL INSTRUCTIONS:**
-1.  **Style:** The image MUST be in a clean, modern, vector-graphic style. Use sharp lines, simple icons, and high-contrast colors.
-2.  **Text Quality:** All text MUST be perfectly sharp, legible, and easy to read. There should be zero blurriness or artifacts.
-3.  **Accuracy:** Every single word from the provided structure must be rendered with perfect spelling. DO NOT add, omit, or change any text.
-4.  **Layout:** Follow the layout described in the structure precisely.
+1.  **Content Accuracy:** You MUST include all the text from the "Key Information to Render" section. Render every word with perfect spelling. DO NOT add, omit, or change any text from the key information. Ensure all content is fully visible and not cut-off.
+2.  **Style:** The image MUST be in a clean, simple, modern, vector-graphic style. Use sharp lines, simple icons, and a clear, high-contrast color palette.
+3.  **Text Quality:** All text MUST be perfectly sharp, legible, and easy to read. There should be zero blurriness, artifacts, or incomplete words.
+4.  **Layout:** Follow the "Suggested Structure" as a guide to lay out the information logically and visually.
 
-The final output must be a visually appealing, professional, and flawlessly accurate infographic.`,
+The final output must be a visually appealing, professional, and flawlessly accurate infographic that contains all the provided key information.
+`;
+    
+    const {media} = await ai.generate({
+      model: 'googleai/gemini-2.0-flash-preview-image-generation',
+      prompt: prompt,
       config: {
         responseModalities: ['TEXT', 'IMAGE'],
       },
