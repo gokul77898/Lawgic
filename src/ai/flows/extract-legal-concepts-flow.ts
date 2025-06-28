@@ -20,18 +20,18 @@ const ExtractLegalConceptsOutputSchema = z.object({
   summary: z
     .string()
     .describe(
-      'A concise, one-sentence summary of the main point of the legal text.'
+      'A comprehensive summary of the legal text, capturing the main argument and conclusion in 2-3 sentences.'
     ),
   keyConcepts: z
-    .array(z.string().max(30, 'Concepts must be 30 characters or less'))
+    .array(z.string())
     .length(4, 'Must provide exactly 4 key concepts')
     .describe(
-      'A list of the four most important, core concepts from the text. Each concept should be a short phrase of 2-3 words.'
+      'A list of the four most important, core concepts from the text. Each concept should be a concise phrase that captures a key pillar of the text.'
     ),
   relationships: z
     .string()
     .describe(
-      'A short paragraph (2-3 sentences) explaining how the key concepts are interconnected and support the main summary.'
+      'A detailed paragraph (3-4 sentences) explaining the nuances of how the key concepts are interconnected and build upon each other to support the main summary.'
     ),
 });
 export type ExtractLegalConceptsOutput = z.infer<typeof ExtractLegalConceptsOutputSchema>;
@@ -46,17 +46,20 @@ const extractLegalConceptsPrompt = ai.definePrompt({
   name: 'extractLegalConceptsPrompt',
   input: {schema: ExtractLegalConceptsInputSchema},
   output: {schema: ExtractLegalConceptsOutputSchema},
-  prompt: `You are an expert legal analyst. Your task is to distill the provided legal text into its most essential components for an infographic.
+  prompt: `You are an expert legal analyst. Your mission is to perform a comprehensive analysis of the provided legal text and extract the key information needed to build a detailed, yet easy-to-understand infographic.
 
-1.  **Summarize:** Create a single, concise sentence that captures the main point of the text.
-2.  **Extract Core Concepts:** Identify exactly four core concepts from the text. Each concept must be a very short phrase, ideally 2-3 words. These should represent the main pillars of the argument (e.g., "Judicial Power", "Arbitral Authority", "Contractual Obligation").
-3.  **Explain Relationships:** Write a short paragraph (2-3 sentences) explaining how the four key concepts you extracted are interconnected and how they relate to the overall summary.
+1.  **Comprehensive Summary:** Do not oversimplify. Write a thorough summary (2-3 sentences) that captures the core argument, the context, and the conclusion of the legal text. This will be the main title of the infographic.
+
+2.  **Extract Core Pillars:** Identify the **four most important pillars** or concepts that form the foundation of the text's argument. These concepts should be concise enough to fit within a visual element on an infographic, but detailed enough to be meaningful. Think of them as sub-headings (e.g., "Scope of Arbitral Power", "Contractual Consent to Arbitration", "Judicial Review Limitations", "Public Policy Exceptions").
+
+3.  **Explain Interconnections:** Write a detailed paragraph (3-4 sentences) that doesn't just state, but *explains* the nuanced relationships between the four pillars you identified. How do they influence each other? How do they collectively support the main summary?
+
 4.  **Proofread:** Meticulously check your output for any spelling or grammatical errors. The output must be flawless.
 
 Legal Text:
 {{{legalText}}}
 
-The output must be a JSON object with three fields: 'summary' (a single sentence string), 'keyConcepts' (an array of exactly 4 short strings), and 'relationships' (a short paragraph).`,
+The output must be a JSON object with three fields: 'summary' (a comprehensive 2-3 sentence string), 'keyConcepts' (an array of exactly 4 concise but descriptive strings), and 'relationships' (a detailed 3-4 sentence paragraph).`,
 });
 
 const extractLegalConceptsFlow = ai.defineFlow(
