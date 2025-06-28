@@ -15,7 +15,6 @@ const GenerateInfographicImageInputSchema = z.object({
   summary: z.string().describe("A brief summary of the legal text."),
   concepts: z.array(z.string()).describe("Key legal concepts extracted from the text."),
   relationships: z.array(z.string()).describe("Relationships between the extracted concepts."),
-  structure: z.string().describe("A description of the suggested infographic structure."),
 });
 export type GenerateInfographicImageInput = z.infer<typeof GenerateInfographicImageInputSchema>;
 
@@ -38,31 +37,30 @@ const generateInfographicImageFlow = ai.defineFlow(
     inputSchema: GenerateInfographicImageInputSchema,
     outputSchema: GenerateInfographicImageOutputSchema,
   },
-  async ({ summary, concepts, relationships, structure }) => {
+  async ({ summary, concepts, relationships }) => {
     const conceptsList = concepts.map(c => `- ${c}`).join('\n');
     const relationshipsList = relationships.map(r => `- ${r}`).join('\n');
 
-    const prompt = `You are a graphic design AI specializing in creating beautiful, high-quality infographics. Your task is to generate an image based on the provided structure and content.
+    const prompt = `You are an expert graphic designer tasked with creating a minimalist, clear, and professional infographic.
 
-**CRITICAL INSTRUCTION: YOUR #1 PRIORITY IS TEXT ACCURACY AND LEGIBILITY.**
-The most important part of this task is that every single word of text is rendered perfectly, with no spelling errors, no omissions, and no graphical distortion. If the text is not 100% legible and complete, the image is a failure.
+**Critical Mission:** Your absolute #1 priority is flawless text rendering. Every single word must be perfectly legible, spelled correctly, and complete. If the text is not 100% readable, the entire image is a failure.
 
-**VISUAL STRUCTURE (FOLLOW THIS EXACTLY):**
-${structure}
-
-**TEXT CONTENT (RENDER THIS EXACTLY AS SPECIFIED IN THE STRUCTURE):**
-- **Summary:** ${summary}
-- **Key Concepts:**
+**Content to Display:**
+1.  **Main Title (from Summary):** ${summary}
+2.  **Key Concepts (as a list or distinct blocks):**
 ${conceptsList}
-- **Relationships:**
+3.  **Key Relationships (as a list or connecting lines):**
 ${relationshipsList}
 
-**VISUAL STYLE (NON-NEGOTIABLE):**
-- **Layout:** Use the provided infographic layout. Keep the design simple, clean, and uncluttered.
-- **Style:** Minimalist vector art. Use a high-contrast color scheme for readability.
-- **Font:** Use a clean, bold, standard sans-serif font like Helvetica or Arial. Do not use decorative or script fonts.
+**Visual Instructions (Non-negotiable):**
+- **Layout:** Create a simple, clean, three-section layout. A main title section, a section for 'Key Concepts', and a section for 'Key Relationships'. Use simple geometric shapes (rectangles, circles) to frame the content. Do NOT create complex or illustrative scenes.
+- **Style:** Flat, 2D vector graphic. High-contrast colors. No gradients, no shadows, no complex textures.
+- **Font:** Use a bold, standard, sans-serif font like Arial or Helvetica. The font must be extremely clear.
+- **Icons:** You may use one simple, universally understood icon for each 'Key Concept'. The icon must be secondary to the text.
+- **Do NOT add any text that is not explicitly provided above.**
+- **Do NOT omit any text.**
 
-**FINAL CHECK:** Before generating, confirm that every word in your planned image matches the text provided above and that the structure matches the description. Do not add any text that is not provided here. Do not omit any text. Do not change the layout.
+Generate the image based on these strict instructions.
 `;
     
     const {media} = await ai.generate({

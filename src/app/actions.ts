@@ -3,7 +3,6 @@
 
 import { z } from 'zod';
 import { extractLegalConcepts } from '@/ai/flows/extract-legal-concepts-flow';
-import { generateInfographicStructure } from '@/ai/flows/generate-infographic-structure';
 import { generateInfographicImage } from '@/ai/flows/generate-infographic-image-flow';
 
 const formSchema = z.object({
@@ -16,7 +15,6 @@ export type InfographicData = {
   concepts: string[];
   relationships: string[];
   summary: string;
-  structure: string;
   imageUrl: string;
 }
 
@@ -34,16 +32,12 @@ export async function generateInfographicAction(prevState: any, formData: FormDa
   
   try {
     const legalText = validatedFields.data.legalText;
-    const [conceptsResult, structureResult] = await Promise.all([
-      extractLegalConcepts({ legalText }),
-      generateInfographicStructure({ legalText }),
-    ]);
+    const conceptsResult = await extractLegalConcepts({ legalText });
 
     const imageResult = await generateInfographicImage({
       summary: conceptsResult.summary,
       concepts: conceptsResult.concepts,
       relationships: conceptsResult.relationships,
-      structure: structureResult.infographicStructure,
     });
 
     return {
@@ -51,7 +45,6 @@ export async function generateInfographicAction(prevState: any, formData: FormDa
         concepts: conceptsResult.concepts,
         relationships: conceptsResult.relationships,
         summary: conceptsResult.summary,
-        structure: structureResult.infographicStructure,
         imageUrl: imageResult.imageUrl,
       } as InfographicData,
       error: null,
