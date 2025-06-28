@@ -46,20 +46,20 @@ const extractLegalConceptsPrompt = ai.definePrompt({
   name: 'extractLegalConceptsPrompt',
   input: {schema: ExtractLegalConceptsInputSchema},
   output: {schema: ExtractLegalConceptsOutputSchema},
-  prompt: `You are an expert legal analyst. Your mission is to perform a comprehensive analysis of the provided legal text and extract the key information needed to build a detailed, yet easy-to-understand infographic.
+  prompt: `You are an expert legal analyst. Your mission is to distill the entire logical structure and core arguments of the provided legal text. The goal is to capture the complete concept of the article in a format suitable for a detailed infographic.
 
-1.  **Comprehensive Summary:** Do not oversimplify. Write a thorough summary (2-3 sentences) that captures the core argument, the context, and the conclusion of the legal text. This will be the main title of the infographic.
+1.  **Comprehensive Summary:** Write a thorough summary (2-3 sentences) that precisely captures the central argument, its context, and the final conclusion of the legal text. This summary must encapsulate the main takeaway of the entire document.
 
-2.  **Extract Core Pillars:** Identify the **four most important pillars** or concepts that form the foundation of the text's argument. These concepts should be concise enough to fit within a visual element on an infographic, but detailed enough to be meaningful. Think of them as sub-headings (e.g., "Scope of Arbitral Power", "Contractual Consent to Arbitration", "Judicial Review Limitations", "Public Policy Exceptions").
+2.  **Extract Core Arguments:** Identify the four foundational pillars that constitute the text's complete argument. These are not just topics; they are the core propositions or findings. Each concept must be a descriptive phrase that is fully representative of a key part of the author's reasoning (e.g., "Arbitrators' Power is Defined by Contract," "Judicial Review is Narrowly Limited," "Consent to Arbitration Must Be Clear," "Public Policy Can Invalidate Awards").
 
-3.  **Explain Interconnections:** Write a detailed paragraph (3-4 sentences) that doesn't just state, but *explains* the nuanced relationships between the four pillars you identified. How do they influence each other? How do they collectively support the main summary?
+3.  **Explain the Logical Flow:** Write a detailed paragraph (3-4 sentences) explaining how these four pillars logically connect to form the complete argument. Describe the flow of reasoning from one concept to the next, showing how they build on each other to reach the main conclusion outlined in your summary.
 
 4.  **Proofread:** Meticulously check your output for any spelling or grammatical errors. The output must be flawless.
 
 Legal Text:
 {{{legalText}}}
 
-The output must be a JSON object with three fields: 'summary' (a comprehensive 2-3 sentence string), 'keyConcepts' (an array of exactly 4 concise but descriptive strings), and 'relationships' (a detailed 3-4 sentence paragraph).`,
+The output must be a JSON object with three fields: 'summary' (a comprehensive 2-3 sentence string), 'keyConcepts' (an array of exactly 4 descriptive strings representing core arguments), and 'relationships' (a detailed 3-4 sentence paragraph explaining the logical flow).`,
 });
 
 const extractLegalConceptsFlow = ai.defineFlow(
