@@ -17,6 +17,11 @@ const GenerateInfographicImageInputSchema = z.object({
     .array(z.string())
     .length(4)
     .describe('A list of four key concepts, each a short phrase.'),
+  relationships: z
+    .string()
+    .describe(
+      'A short paragraph explaining the connection between the concepts.'
+    ),
 });
 export type GenerateInfographicImageInput = z.infer<
   typeof GenerateInfographicImageInputSchema
@@ -43,7 +48,7 @@ const generateInfographicImageFlow = ai.defineFlow(
     inputSchema: GenerateInfographicImageInputSchema,
     outputSchema: GenerateInfographicImageOutputSchema,
   },
-  async ({summary, keyConcepts}) => {
+  async ({summary, keyConcepts, relationships}) => {
     const prompt = `You are an expert graphic designer tasked with creating a professional and visually engaging infographic based on a specific, clean design.
 
 **CRITICAL: YOUR #1 PRIORITY IS PERFECT TEXT LEGIBILITY.** All text must be 100% complete, spelled correctly, and rendered in a clean, bold, sans-serif font (like Arial or Helvetica). There must be no typos or garbled letters.
@@ -62,7 +67,10 @@ const generateInfographicImageFlow = ai.defineFlow(
     *   The text inside the circles **MUST** be white, centered, and perfectly readable.
 5.  **Icons:**
     *   Place four simple, black, line-art style icons around the central graphic. These icons should be abstract and related to legal or business concepts (e.g., scales of justice, a gavel, a document, a handshake). Do not place them inside the circles.
-6.  **Final Check:** Before outputting the image, meticulously check that:
+6.  **Relationships Text:**
+    *   Place the "Relationships" text below the central graphic.
+    *   Use black text, slightly smaller than the main title.
+7.  **Final Check:** Before outputting the image, meticulously check that:
     *   Every single word from the content is present and spelled correctly.
     *   The layout exactly matches these instructions.
     *   The text is perfectly clear and legible.
@@ -77,6 +85,9 @@ const generateInfographicImageFlow = ai.defineFlow(
     2. ${keyConcepts[1]}
     3. ${keyConcepts[2]}
     4. ${keyConcepts[3]}
+
+*   **Relationships:**
+    > ${relationships}
 
 Produce a high-quality, high-resolution infographic based on these exact specifications.`;
 

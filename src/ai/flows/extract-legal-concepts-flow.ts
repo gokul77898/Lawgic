@@ -28,6 +28,11 @@ const ExtractLegalConceptsOutputSchema = z.object({
     .describe(
       'A list of the four most important, core concepts from the text. Each concept should be a short phrase of 2-3 words.'
     ),
+  relationships: z
+    .string()
+    .describe(
+      'A short paragraph (2-3 sentences) explaining how the key concepts are interconnected and support the main summary.'
+    ),
 });
 export type ExtractLegalConceptsOutput = z.infer<typeof ExtractLegalConceptsOutputSchema>;
 
@@ -45,12 +50,13 @@ const extractLegalConceptsPrompt = ai.definePrompt({
 
 1.  **Summarize:** Create a single, concise sentence that captures the main point of the text.
 2.  **Extract Core Concepts:** Identify exactly four core concepts from the text. Each concept must be a very short phrase, ideally 2-3 words. These should represent the main pillars of the argument (e.g., "Judicial Power", "Arbitral Authority", "Contractual Obligation").
-3.  **Proofread:** Meticulously check your output for any spelling or grammatical errors. The output must be flawless.
+3.  **Explain Relationships:** Write a short paragraph (2-3 sentences) explaining how the four key concepts you extracted are interconnected and how they relate to the overall summary.
+4.  **Proofread:** Meticulously check your output for any spelling or grammatical errors. The output must be flawless.
 
 Legal Text:
 {{{legalText}}}
 
-The output must be a JSON object with two fields: 'summary' (a single sentence string), and 'keyConcepts' (an array of exactly 4 short strings).`,
+The output must be a JSON object with three fields: 'summary' (a single sentence string), 'keyConcepts' (an array of exactly 4 short strings), and 'relationships' (a short paragraph).`,
 });
 
 const extractLegalConceptsFlow = ai.defineFlow(

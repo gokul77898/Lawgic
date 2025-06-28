@@ -15,6 +15,7 @@ export type InfographicData = {
   keyConcepts: string[];
   summary: string;
   imageUrl: string;
+  relationships: string;
 }
 
 export async function generateInfographicAction(prevState: any, formData: FormData) {
@@ -36,6 +37,7 @@ export async function generateInfographicAction(prevState: any, formData: FormDa
     const imageResult = await generateInfographicImage({
       summary: analysisResult.summary,
       keyConcepts: analysisResult.keyConcepts,
+      relationships: analysisResult.relationships,
     });
 
     return {
@@ -43,6 +45,7 @@ export async function generateInfographicAction(prevState: any, formData: FormDa
         keyConcepts: analysisResult.keyConcepts,
         summary: analysisResult.summary,
         imageUrl: imageResult.imageUrl,
+        relationships: analysisResult.relationships,
       } as InfographicData,
       error: null,
     };

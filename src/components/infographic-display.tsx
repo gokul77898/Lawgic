@@ -3,7 +3,7 @@
 import type { InfographicData } from '@/app/actions';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { FileText, Download, ListChecks, Image as ImageIcon } from 'lucide-react';
+import { FileText, Download, ListChecks, Image as ImageIcon, Link2 } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import Image from 'next/image';
@@ -82,6 +82,16 @@ export function InfographicDisplay({ data }: { data: InfographicData | null }) {
           <p className="text-muted-foreground text-sm mt-2">{data.summary}</p>
         </div>
         
+        <Separator />
+
+        <div>
+          <h3 className="flex items-center gap-2 font-headline text-lg font-semibold text-primary">
+            <Link2 className="w-5 h-5" />
+            Relationships
+          </h3>
+          <p className="text-muted-foreground text-sm mt-2">{data.relationships}</p>
+        </div>
+
         <Separator />
 
         <div>
