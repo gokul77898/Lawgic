@@ -1,3 +1,4 @@
+
 // src/ai/flows/extract-legal-concepts-flow.ts
 'use server';
 /**
@@ -37,7 +38,7 @@ const extractLegalConceptsPrompt = ai.definePrompt({
   
   1.  **Extract:** Identify the key legal concepts and the relationships between them.
   2.  **Summarize:** Write a brief, clear summary of the text.
-  3.  **Proofread:** Meticulously check your output for any spelling or grammatical errors. The output must be flawless.
+  3.  **Proofread:** Meticulously check your output for any spelling or grammatical errors. Double-check for any spelling errors before outputting the JSON. The output must be flawless.
 
   Legal Text:
   {{{legalText}}}

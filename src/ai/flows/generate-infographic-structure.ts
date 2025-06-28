@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview Flow to convert extracted legal information into a clear and understandable visual structure for an infographic.
@@ -43,6 +44,8 @@ const prompt = ai.definePrompt({
   - **Visual Elements:** Suggest specific, high-quality icons or simple illustrations that clarify the concepts.
   - **Flow & Relationships:** Describe how the sections and elements connect to tell a coherent story.
   - **Text Content:** All suggested text (headings, labels, callouts) must be concise and perfectly proofread.
+
+  **IMPORTANT:** The text you output will be used *verbatim* in the final image. It must be perfect.
 
   Legal Text: {{{legalText}}}
   `,
