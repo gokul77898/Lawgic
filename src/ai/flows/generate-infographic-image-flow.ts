@@ -15,7 +15,7 @@ const GenerateInfographicImageInputSchema = z.object({
   summary: z.string().describe("A brief summary of the legal text."),
   concepts: z.array(z.string()).describe("Key legal concepts extracted from the text."),
   relationships: z.array(z.string()).describe("Relationships between the extracted concepts."),
-  structure: z.string().describe("A description of the suggested infographic flowchart/diagram structure."),
+  structure: z.string().describe("A description of the suggested infographic structure."),
 });
 export type GenerateInfographicImageInput = z.infer<typeof GenerateInfographicImageInputSchema>;
 
@@ -42,9 +42,9 @@ const generateInfographicImageFlow = ai.defineFlow(
     const conceptsList = concepts.map(c => `- ${c}`).join('\n');
     const relationshipsList = relationships.map(r => `- ${r}`).join('\n');
 
-    const prompt = `You are an image generation service. Your ONLY task is to create a clean, simple flowchart or diagram based on the exact instructions provided.
+    const prompt = `You are a graphic design AI specializing in creating beautiful, high-quality infographics. Your task is to generate an image based on the provided structure and content.
 
-**CRITICAL INSTRUCTION: PRIORITIZE TEXT ACCURACY AND LEGIBILITY ABOVE ALL ELSE.**
+**CRITICAL INSTRUCTION: YOUR #1 PRIORITY IS TEXT ACCURACY AND LEGIBILITY.**
 The most important part of this task is that every single word of text is rendered perfectly, with no spelling errors, no omissions, and no graphical distortion. If the text is not 100% legible and complete, the image is a failure.
 
 **VISUAL STRUCTURE (FOLLOW THIS EXACTLY):**
@@ -58,8 +58,8 @@ ${conceptsList}
 ${relationshipsList}
 
 **VISUAL STYLE (NON-NEGOTIABLE):**
-- **Layout:** Use the provided flowchart/diagram layout. Keep the design simple and uncluttered.
-- **Style:** Minimalist vector art. High contrast color scheme.
+- **Layout:** Use the provided infographic layout. Keep the design simple, clean, and uncluttered.
+- **Style:** Minimalist vector art. Use a high-contrast color scheme for readability.
 - **Font:** Use a clean, bold, standard sans-serif font like Helvetica or Arial. Do not use decorative or script fonts.
 
 **FINAL CHECK:** Before generating, confirm that every word in your planned image matches the text provided above and that the structure matches the description. Do not add any text that is not provided here. Do not omit any text. Do not change the layout.

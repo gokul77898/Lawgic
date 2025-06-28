@@ -1,7 +1,7 @@
 
 'use server';
 /**
- * @fileOverview Flow to convert extracted legal information into a clear flowchart structure for an infographic.
+ * @fileOverview Flow to convert extracted legal information into a clear structure for an infographic.
  *
  * - generateInfographicStructure - A function that handles the generation of the infographic structure.
  * - GenerateInfographicStructureInput - The input type for the generateInfographicStructure function.
@@ -35,17 +35,15 @@ const prompt = ai.definePrompt({
   name: 'generateInfographicStructurePrompt',
   input: {schema: GenerateInfographicStructureInputSchema},
   output: {schema: GenerateInfographicStructureOutputSchema},
-  prompt: `You are an expert in information design, specializing in creating simple, clear flowcharts and diagrams from complex text. Your task is to convert the following legal text into a logical flowchart structure.
+  prompt: `You are an expert in information design, specializing in creating visually engaging and easy-to-understand infographics from complex text. Your task is to propose a structure for an infographic based on the provided legal text.
 
-**Crucial Constraint:** Your output will be used by another AI to generate an image. Therefore, your proposed flowchart structure MUST be extremely simple and easy to draw. Prioritize clarity to ensure the final image is readable.
+Your output must be a description that an image generation AI can use. It must be clear, simple, and easy to draw.
 
-Analyze the legal text and describe a simple flowchart or diagram structure.
-
-**Your description must include:**
-- **Layout:** A simple top-to-bottom or left-to-right flow. Use basic shapes like rectangles for concepts and arrows for relationships.
-- **Nodes:** Define the key concepts or steps as nodes in the flowchart.
-- **Connectors:** Describe the arrows or lines that connect the nodes, representing the aiflow and relationships.
-- **Text Placement:** Specify exactly where the summary and relationship text should be placed on the diagram.
+Your description must include:
+- **Theme & Style:** Suggest a visual theme (e.g., 'modern and clean', 'justice and balance').
+- **Layout:** Describe a visually appealing layout. Don't just list items; describe how they should be arranged (e.g., a central icon with radiating points, a vertical timeline, three distinct sections with headers).
+- **Iconography:** For each key concept, suggest a simple, recognizable icon that could represent it.
+- **Text Placement:** Specify exactly where the summary, concepts, and relationship text should be placed on the infographic.
 
 The final image quality depends entirely on the simplicity and clarity of your structural description.
 

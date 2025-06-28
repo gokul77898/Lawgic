@@ -34,9 +34,9 @@ const extractLegalConceptsPrompt = ai.definePrompt({
   name: 'extractLegalConceptsPrompt',
   input: {schema: ExtractLegalConceptsInputSchema},
   output: {schema: ExtractLegalConceptsOutputSchema},
-  prompt: `You are a meticulous expert legal analyst. Your task is to analyze legal text and distill it into extremely concise data for a flowchart. Brevity and accuracy are paramount.
+  prompt: `You are a meticulous expert legal analyst. Your task is to analyze legal text and distill it into key components suitable for a visually rich infographic. Brevity and accuracy are paramount.
 
-1.  **Extract Concepts:** Identify the 3-5 most important legal concepts.
+1.  **Extract Concepts:** Identify the 3-5 most important legal concepts. These should be very short (1-3 words).
 2.  **Extract Relationships:** Identify the 3 most critical relationships between these concepts. Describe each relationship in a very short phrase (3-5 words maximum).
 3.  **Summarize:** Write a single, clear, one-sentence summary of the entire text.
 4.  **Proofread:** Meticulously check your output for any spelling or grammatical errors. The output must be flawless.
