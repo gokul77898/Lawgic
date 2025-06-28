@@ -3,7 +3,7 @@
 
 import { z } from 'zod';
 import { extractLegalConcepts } from '@/ai/flows/extract-legal-concepts-flow';
-import { generateInfographicStructure } from '@/ai/flows/generate-infographic-structure.ts';
+import { generateInfographicStructure } from '@/ai/flows/generate-infographic-structure';
 import { generateInfographicImage } from '@/ai/flows/generate-infographic-image-flow';
 
 const formSchema = z.object({
