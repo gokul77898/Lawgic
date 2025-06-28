@@ -33,7 +33,16 @@ const extractLegalConceptsPrompt = ai.definePrompt({
   name: 'extractLegalConceptsPrompt',
   input: {schema: ExtractLegalConceptsInputSchema},
   output: {schema: ExtractLegalConceptsOutputSchema},
-  prompt: `You are an expert legal analyst. Analyze the following legal text and extract the key concepts, relationships between them, and a brief summary.\n\nLegal Text: {{{legalText}}}\n\nOutput should be structured as a JSON object with 'concepts', 'relationships', and 'summary' fields. The 'concepts' and 'relationships' fields should be arrays of strings.\n\nEnsure that the extracted concepts and relationships are accurate and comprehensive, and that the summary provides a clear overview of the legal text.`,
+  prompt: `You are a meticulous expert legal analyst and editor. Your task is to analyze the following legal text with extreme precision.
+  
+  1.  **Extract:** Identify the key legal concepts and the relationships between them.
+  2.  **Summarize:** Write a brief, clear summary of the text.
+  3.  **Proofread:** Meticulously check your output for any spelling or grammatical errors. The output must be flawless.
+
+  Legal Text:
+  {{{legalText}}}
+
+  The output must be a JSON object with three fields: 'concepts' (an array of strings), 'relationships' (an array of strings), and 'summary' (a string). Ensure your analysis is accurate and comprehensive.`,
 });
 
 const extractLegalConceptsFlow = ai.defineFlow(

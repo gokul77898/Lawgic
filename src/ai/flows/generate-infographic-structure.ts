@@ -34,9 +34,15 @@ const prompt = ai.definePrompt({
   name: 'generateInfographicStructurePrompt',
   input: {schema: GenerateInfographicStructureInputSchema},
   output: {schema: GenerateInfographicStructureOutputSchema},
-  prompt: `You are an expert in converting complex information into visually appealing and easy-to-understand infographics.
+  prompt: `You are an expert in information design and data visualization. Your task is to convert complex legal text into a clear, logical, and visually compelling structure for an infographic.
 
-  Analyze the following legal text and generate a description of a detailed infographic structure that would best represent the information for a high-resolution, HD quality image. Include sections, visual elements (suggesting high-quality icons or illustrations), and their relationships. The structure should be suitable for a visually rich and detailed presentation.
+  Analyze the following legal text and generate a description of a detailed infographic structure. This structure will be used to create a high-resolution, HD-quality image. Your description must be precise and well-written, with no spelling or grammatical errors.
+
+  **Include:**
+  - **Sections:** Break the information into logical sections with clear headings.
+  - **Visual Elements:** Suggest specific, high-quality icons or simple illustrations that clarify the concepts.
+  - **Flow & Relationships:** Describe how the sections and elements connect to tell a coherent story.
+  - **Text Content:** All suggested text (headings, labels, callouts) must be concise and perfectly proofread.
 
   Legal Text: {{{legalText}}}
   `,
