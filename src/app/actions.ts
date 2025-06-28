@@ -4,6 +4,7 @@
 import { z } from 'zod';
 import { extractLegalConcepts } from '@/ai/flows/extract-legal-concepts-flow';
 import { generateInfographicImage } from '@/ai/flows/generate-infographic-image-flow';
+import type { KeyConcept } from '@/ai/schemas';
 
 const formSchema = z.object({
   legalText: z.string().min(50, {
@@ -12,7 +13,7 @@ const formSchema = z.object({
 });
 
 export type InfographicData = {
-  keyConcepts: string[];
+  keyConcepts: KeyConcept[];
   summary: string;
   imageUrl: string;
   relationships: string;

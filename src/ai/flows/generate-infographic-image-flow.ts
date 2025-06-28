@@ -10,13 +10,15 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'zod';
+import { KeyConceptSchema } from '@/ai/schemas';
+
 
 const GenerateInfographicImageInputSchema = z.object({
   summary: z.string().describe('A one-sentence summary of the legal text.'),
   keyConcepts: z
-    .array(z.string())
+    .array(KeyConceptSchema)
     .length(4)
-    .describe('A list of four key concepts, each a short phrase.'),
+    .describe('A list of four key concepts, each with a concept, description, and icon name.'),
   relationships: z
     .string()
     .describe(
@@ -49,42 +51,48 @@ const generateInfographicImageFlow = ai.defineFlow(
     outputSchema: GenerateInfographicImageOutputSchema,
   },
   async ({summary, keyConcepts, relationships}) => {
-    const prompt = `You are an expert graphic designer tasked with creating a professional and visually engaging infographic based on a specific, clean design.
+    const prompt = `You are an expert graphic designer tasked with creating a professional, clean, and modern infographic.
 
-**CRITICAL: YOUR #1 PRIORITY IS PERFECT TEXT LEGIBILITY.** All text must be 100% complete, spelled correctly, and rendered in a clean, bold, sans-serif font (like Arial or Helvetica). There must be no typos or garbled letters.
+**CRITICAL: YOUR #1 PRIORITY IS PERFECT TEXT LEGIBILITY.** All text must be 100% complete, spelled correctly, and rendered in a clean, bold, sans-serif font (like Arial or Helvetica). There must be no typos, garbled letters, or cut-off text.
 
 **Design and Layout Instructions (Follow these EXACTLY):**
 
-1.  **Background:** Use a plain, solid white background for the entire image.
-2.  **Color Palette:** Use a simple, professional palette. The main color for shapes should be a dark blue (e.g., #003366). All text inside shapes should be white. All text outside shapes should be black.
-3.  **Main Title:**
-    *   Place the provided "Summary" text at the top-center of the infographic.
-    *   Use black text.
-    *   Place a short, dark blue horizontal line directly underneath the summary text.
-4.  **Central Graphic:**
-    *   Create a central graphic consisting of four interconnected dark blue circles. They should be arranged in a visually balanced way, similar to a four-leaf clover or a 2x2 grid with connecting elements.
-    *   Place one "Key Concept" inside each of the four circles.
-    *   The text inside the circles **MUST** be white, centered, and perfectly readable.
-5.  **Icons:**
-    *   Place four simple, black, line-art style icons around the central graphic. These icons should be abstract and related to legal or business concepts (e.g., scales of justice, a gavel, a document, a handshake). Do not place them inside the circles.
-6.  **Relationships Text:**
-    *   Place the "Relationships" text below the central graphic.
-    *   Use black text, slightly smaller than the main title.
-7.  **Final Check:** Before outputting the image, meticulously check that:
-    *   Every single word from the content is present and spelled correctly.
-    *   The layout exactly matches these instructions.
-    *   The text is perfectly clear and legible.
+1.  **Background:** Use a solid, very light grey background (e.g., #f8f9fa).
+2.  **Color Palette:** Use a professional and cohesive color palette. The primary color for accents and icons should be a deep navy blue (e.g., #0a2540). Text should be black or very dark grey.
+3.  **Main Title (Summary):**
+    *   Place the provided "Summary" text at the very top of the infographic, centered.
+    *   Make it the largest text on the image.
+    *   Place a short, navy blue horizontal line directly underneath the summary text.
+4.  **Key Concepts Grid (2x2):**
+    *   Create a 2x2 grid of four rounded rectangular cards below the main title. The cards should have a white background and a subtle drop shadow. Ensure adequate spacing between cards.
+    *   For each of the four cards, do the following:
+        *   **Icon:** At the top of the card, centered, place a simple, navy blue, line-art icon corresponding to the provided icon name.
+        *   **Concept Title:** Below the icon, display the "concept" text as a bold heading.
+        *   **Concept Description:** Below the heading, display the "description" text in a smaller, regular font.
+        *   All text within the card should be centered and perfectly readable.
+5.  **Relationships Text:**
+    *   Place the "Relationships" text at the bottom of the infographic, below the grid.
+    *   Use a regular font size, smaller than the main title but slightly larger than the card descriptions.
+6.  **Overall Style:** The final image must look modern, clean, and professional. Ensure balanced whitespace and perfect alignment.
 
 **Content for the Infographic:**
 
 *   **Summary:**
     > ${summary}
 
-*   **Key Concepts (for the four circles):**
-    1. ${keyConcepts[0]}
-    2. ${keyConcepts[1]}
-    3. ${keyConcepts[2]}
-    4. ${keyConcepts[3]}
+*   **Key Concepts Grid (for the four cards):**
+    1.  **Icon:** ${keyConcepts[0].icon}
+        **Concept:** ${keyConcepts[0].concept}
+        **Description:** ${keyConcepts[0].description}
+    2.  **Icon:** ${keyConcepts[1].icon}
+        **Concept:** ${keyConcepts[1].concept}
+        **Description:** ${keyConcepts[1].description}
+    3.  **Icon:** ${keyConcepts[2].icon}
+        **Concept:** ${keyConcepts[2].concept}
+        **Description:** ${keyConcepts[2].description}
+    4.  **Icon:** ${keyConcepts[3].icon}
+        **Concept:** ${keyConcepts[3].concept}
+        **Description:** ${keyConcepts[3].description}
 
 *   **Relationships:**
     > ${relationships}

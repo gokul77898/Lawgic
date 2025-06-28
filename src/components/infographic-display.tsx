@@ -99,11 +99,11 @@ export function InfographicDisplay({ data }: { data: InfographicData | null }) {
             <ListChecks className="w-5 h-5" />
             Key Concepts
           </h3>
-          <ul className="mt-3 space-y-3 text-sm text-foreground/80">
-            {data.keyConcepts.map((point) => (
-              <li key={point} className="flex items-start">
-                <span className="text-accent mr-3 mt-1">&#9679;</span>
-                <span>{point}</span>
+          <ul className="mt-3 space-y-4 text-sm">
+            {data.keyConcepts.map((item) => (
+              <li key={item.concept}>
+                <p className="font-semibold text-foreground">{item.concept}</p>
+                <p className="text-muted-foreground mt-1">{item.description}</p>
               </li>
             ))}
           </ul>

@@ -10,6 +10,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'zod';
+import { KeyConceptSchema } from '@/ai/schemas';
 
 const ExtractLegalConceptsInputSchema = z.object({
   legalText: z.string().describe('The legal text to analyze.'),
@@ -23,10 +24,10 @@ const ExtractLegalConceptsOutputSchema = z.object({
       'A comprehensive summary of the legal text, capturing the main argument and conclusion in 2-3 sentences.'
     ),
   keyConcepts: z
-    .array(z.string())
+    .array(KeyConceptSchema)
     .length(4, 'Must provide exactly 4 key concepts')
     .describe(
-      'A list of the four most important, core concepts from the text. Each concept should be a concise phrase that captures a key pillar of the text.'
+      'A list of the four most important, core concepts from the text, each with a title, description, and icon name.'
     ),
   relationships: z
     .string()
@@ -46,20 +47,20 @@ const extractLegalConceptsPrompt = ai.definePrompt({
   name: 'extractLegalConceptsPrompt',
   input: {schema: ExtractLegalConceptsInputSchema},
   output: {schema: ExtractLegalConceptsOutputSchema},
-  prompt: `You are an expert legal analyst. Your mission is to distill the entire logical structure and core arguments of the provided legal text. The goal is to capture the complete concept of the article in a format suitable for a detailed infographic.
+  prompt: `You are an expert legal analyst and information designer. Your mission is to distill the entire logical structure and core arguments of the provided legal text into a format suitable for a modern infographic.
 
-1.  **Comprehensive Summary:** Write a thorough summary (2-3 sentences) that precisely captures the central argument, its context, and the final conclusion of the legal text. This summary must encapsulate the main takeaway of the entire document.
+1.  **Comprehensive Summary:** Write a thorough summary (2-3 sentences) that precisely captures the central argument, its context, and the final conclusion of the legal text.
 
-2.  **Extract Core Arguments:** Identify the four foundational pillars that constitute the text's complete argument. These are not just topics; they are the core propositions or findings. Each concept must be a descriptive phrase that is fully representative of a key part of the author's reasoning (e.g., "Arbitrators' Power is Defined by Contract," "Judicial Review is Narrowly Limited," "Consent to Arbitration Must Be Clear," "Public Policy Can Invalidate Awards").
+2.  **Extract Core Concepts (with details):** Identify the four foundational pillars of the text's argument. For each pillar, provide the details as requested by the output schema.
 
-3.  **Explain the Logical Flow:** Write a detailed paragraph (3-4 sentences) explaining how these four pillars logically connect to form the complete argument. Describe the flow of reasoning from one concept to the next, showing how they build on each other to reach the main conclusion outlined in your summary.
+3.  **Explain the Logical Flow:** Write a detailed paragraph (3-4 sentences) explaining how these four pillars logically connect to form the complete argument.
 
 4.  **Proofread:** Meticulously check your output for any spelling or grammatical errors. The output must be flawless.
 
 Legal Text:
 {{{legalText}}}
 
-The output must be a JSON object with three fields: 'summary' (a comprehensive 2-3 sentence string), 'keyConcepts' (an array of exactly 4 descriptive strings representing core arguments), and 'relationships' (a detailed 3-4 sentence paragraph explaining the logical flow).`,
+The output must be a JSON object that adheres to the provided schema.`,
 });
 
 const extractLegalConceptsFlow = ai.defineFlow(
