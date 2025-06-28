@@ -1,4 +1,3 @@
-
 // src/ai/flows/extract-legal-concepts-flow.ts
 'use server';
 /**
@@ -21,8 +20,8 @@ const ExtractLegalConceptsOutputSchema = z.object({
   concepts: z.array(z.string()).describe('Key legal concepts extracted from the text.'),
   relationships: z
     .array(z.string())
-    .describe('Relationships between the extracted concepts.'),
-  summary: z.string().describe('A brief summary of the legal text.'),
+    .describe('Three to five key relationships between the concepts, each described in a short phrase.'),
+  summary: z.string().describe('A one-sentence summary of the legal text.'),
 });
 export type ExtractLegalConceptsOutput = z.infer<typeof ExtractLegalConceptsOutputSchema>;
 
@@ -34,16 +33,17 @@ const extractLegalConceptsPrompt = ai.definePrompt({
   name: 'extractLegalConceptsPrompt',
   input: {schema: ExtractLegalConceptsInputSchema},
   output: {schema: ExtractLegalConceptsOutputSchema},
-  prompt: `You are a meticulous expert legal analyst and editor. Your task is to analyze the following legal text with extreme precision.
+  prompt: `You are a meticulous expert legal analyst and editor. Your task is to analyze the following legal text with extreme precision. Your goal is to create concise data for a visual infographic, so brevity is essential.
   
-  1.  **Extract:** Identify the key legal concepts and the relationships between them.
-  2.  **Summarize:** Write a brief, clear summary of the text.
-  3.  **Proofread:** Meticulously check your output for any spelling or grammatical errors. Double-check for any spelling errors before outputting the JSON. The output must be flawless.
+1.  **Extract Concepts:** Identify the key legal concepts.
+2.  **Extract Relationships:** Identify the 3-5 most critical relationships between the concepts. Describe each relationship in a very short phrase, not a full sentence.
+3.  **Summarize:** Write a single, clear, one-sentence summary of the text.
+4.  **Proofread:** Meticulously check your output for any spelling or grammatical errors. The output must be flawless.
 
   Legal Text:
   {{{legalText}}}
 
-  The output must be a JSON object with three fields: 'concepts' (an array of strings), 'relationships' (an array of strings), and 'summary' (a string). Ensure your analysis is accurate and comprehensive.`,
+  The output must be a JSON object with three fields: 'concepts' (an array of strings), 'relationships' (an array of short phrases), and 'summary' (a single sentence). Ensure your analysis is accurate and extremely concise.`,
 });
 
 const extractLegalConceptsFlow = ai.defineFlow(

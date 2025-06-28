@@ -42,29 +42,24 @@ const generateInfographicImageFlow = ai.defineFlow(
     const conceptsList = concepts.map(c => `- ${c}`).join('\n');
     const relationshipsList = relationships.map(r => `- ${r}`).join('\n');
 
-    const prompt = `
-**Primary Goal: TEXT CLARITY.** Your only job is to generate a professional infographic where the text is perfectly readable. If the text is not 100% sharp, clear, and legible, the result is a failure.
+    const prompt = `You are an image generation service. Your ONLY task is to create a clean, simple infographic based on the exact instructions provided.
 
-**Style:**
-- Use a simple, modern, vector-graphic style.
-- Use a high-contrast color palette.
-- **Font:** Use a standard, simple, sans-serif font like Arial or Helvetica. DO NOT use fancy or artistic fonts.
+**CRITICAL INSTRUCTION: PRIORITIZE TEXT ACCURACY AND LEGIBILITY ABOVE ALL ELSE.**
+The most important part of this task is that every single word of text is rendered perfectly, with no spelling errors, no omissions, and no graphical distortion. If the text is not 100% legible, the image is a failure.
 
-**Layout Guide:**
-- Use this description to guide the visual layout:
-${structure}
+**Visual Style:**
+- **Layout:** Use the provided layout description. Keep the design simple and uncluttered.
+- **Style:** Minimalist vector art. High contrast color scheme.
+- **Font:** Use a clean, bold, standard sans-serif font like Helvetica or Arial. Do not use decorative or script fonts.
 
-**Text to Render (EXACTLY AS WRITTEN):**
+**TEXT CONTENT (RENDER THIS EXACTLY):**
 - **Summary:** ${summary}
 - **Key Concepts:**
 ${conceptsList}
 - **Relationships:**
 ${relationshipsList}
 
-**ABSOLUTE RULES:**
-1.  **LEGIBILITY:** Text must be perfectly sharp and easy to read. No blurriness. No artifacts.
-2.  **COMPLETENESS:** Render all text provided. Do not cut off or omit any words.
-3.  **ACCURACY:** Spelling must be 100% correct, identical to the text provided.
+**FINAL CHECK:** Before generating, confirm that every word in your planned image matches the text provided above. Do not add any text that is not provided here. Do not omit any text.
 `;
     
     const {media} = await ai.generate({
