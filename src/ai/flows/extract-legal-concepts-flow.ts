@@ -10,7 +10,7 @@
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import {z} from 'zod';
 
 const ExtractLegalConceptsInputSchema = z.object({
   legalText: z.string().describe('The legal text to analyze.'),
