@@ -1,7 +1,7 @@
 
 'use server';
 /**
- * @fileOverview Flow to generate an infographic image from legal analysis data.
+ * @fileOverview Flow to generate an infographic image based on a specific visual template.
  *
  * - generateInfographicImage - A function that handles the generation of the infographic image.
  * - GenerateInfographicImageInput - The input type for the generateInfographicImage function.
@@ -12,17 +12,24 @@ import {ai} from '@/ai/genkit';
 import {z} from 'zod';
 
 const GenerateInfographicImageInputSchema = z.object({
-  summary: z.string().describe("A 2-3 sentence summary of the legal text."),
-  keyPoints: z.array(z.string()).describe("A list of the most important points from the text."),
+  summary: z.string().describe('A one-sentence summary of the legal text.'),
+  keyConcepts: z
+    .array(z.string())
+    .length(4)
+    .describe('A list of four key concepts, each a short phrase.'),
 });
-export type GenerateInfographicImageInput = z.infer<typeof GenerateInfographicImageInputSchema>;
+export type GenerateInfographicImageInput = z.infer<
+  typeof GenerateInfographicImageInputSchema
+>;
 
 const GenerateInfographicImageOutputSchema = z.object({
   imageUrl: z
     .string()
-    .describe("A data URI of the generated infographic image."),
+    .describe('A data URI of the generated infographic image.'),
 });
-export type GenerateInfographicImageOutput = z.infer<typeof GenerateInfographicImageOutputSchema>;
+export type GenerateInfographicImageOutput = z.infer<
+  typeof GenerateInfographicImageOutputSchema
+>;
 
 export async function generateInfographicImage(
   input: GenerateInfographicImageInput
@@ -36,31 +43,43 @@ const generateInfographicImageFlow = ai.defineFlow(
     inputSchema: GenerateInfographicImageInputSchema,
     outputSchema: GenerateInfographicImageOutputSchema,
   },
-  async ({ summary, keyPoints }) => {
-    const keyPointsList = keyPoints.map(p => `- ${p}`).join('\n');
+  async ({summary, keyConcepts}) => {
+    const prompt = `You are an expert graphic designer tasked with creating a professional and visually engaging infographic based on a specific, clean design.
 
-    const prompt = `You are an expert graphic designer tasked with creating a professional and visually engaging infographic. **This is not a flowchart.** Your goal is to present complex information in a beautiful, easy-to-digest format.
+**CRITICAL: YOUR #1 PRIORITY IS PERFECT TEXT LEGIBILITY.** All text must be 100% complete, spelled correctly, and rendered in a clean, bold, sans-serif font (like Arial or Helvetica). There must be no typos or garbled letters.
 
-**Your absolute #1 priority is text legibility.** All text must be rendered perfectly, with no spelling errors, and must be 100% complete. Use a clean, bold, sans-serif font.
+**Design and Layout Instructions (Follow these EXACTLY):**
+
+1.  **Background:** Use a plain, solid white background for the entire image.
+2.  **Color Palette:** Use a simple, professional palette. The main color for shapes should be a dark blue (e.g., #003366). All text inside shapes should be white. All text outside shapes should be black.
+3.  **Main Title:**
+    *   Place the provided "Summary" text at the top-center of the infographic.
+    *   Use black text.
+    *   Place a short, dark blue horizontal line directly underneath the summary text.
+4.  **Central Graphic:**
+    *   Create a central graphic consisting of four interconnected dark blue circles. They should be arranged in a visually balanced way, similar to a four-leaf clover or a 2x2 grid with connecting elements.
+    *   Place one "Key Concept" inside each of the four circles.
+    *   The text inside the circles **MUST** be white, centered, and perfectly readable.
+5.  **Icons:**
+    *   Place four simple, black, line-art style icons around the central graphic. These icons should be abstract and related to legal or business concepts (e.g., scales of justice, a gavel, a document, a handshake). Do not place them inside the circles.
+6.  **Final Check:** Before outputting the image, meticulously check that:
+    *   Every single word from the content is present and spelled correctly.
+    *   The layout exactly matches these instructions.
+    *   The text is perfectly clear and legible.
 
 **Content for the Infographic:**
 
-*   **Main Title:** (Use the provided summary as the main title for the infographic)
+*   **Summary:**
     > ${summary}
 
-*   **Key Points:** (These are the core pieces of information. Each should have its own section or card in the infographic)
-${keyPointsList}
+*   **Key Concepts (for the four circles):**
+    1. ${keyConcepts[0]}
+    2. ${keyConcepts[1]}
+    3. ${keyConcepts[2]}
+    4. ${keyConcepts[3]}
 
-**Design and Layout Instructions (CRITICAL):**
+Produce a high-quality, high-resolution infographic based on these exact specifications.`;
 
-1.  **Layout:** Create a visually appealing layout. **Do NOT just make a vertical list.** Arrange the key points in stylishly designed content blocks or cards. You could use a two-column grid, a hub-and-spoke design, or another creative but clear arrangement.
-2.  **Iconography:** For each "Key Point", create a simple, modern, relevant icon to visually represent the idea. Place the icon clearly next to or above its corresponding text.
-3.  **Theme & Style:** Use a modern, clean, and professional theme. The color palette should be sophisticated (e.g., shades of blue, grey, with one strong accent color). Use background shapes and subtle dividers to create a polished look. The style must be flat and modern, not 3D.
-4.  **Final Check:** Before outputting the image, double-check that every single word from the "Content" section is present on the infographic, is perfectly readable, and correctly spelled.
-
-Produce a high-quality, high-resolution infographic based on these exact specifications.
-`;
-    
     const {media} = await ai.generate({
       model: 'googleai/gemini-2.0-flash-preview-image-generation',
       prompt: prompt,
@@ -73,6 +92,6 @@ Produce a high-quality, high-resolution infographic based on these exact specifi
       throw new Error('Image generation failed.');
     }
 
-    return { imageUrl: media.url };
+    return {imageUrl: media.url};
   }
 );

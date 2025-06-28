@@ -12,7 +12,7 @@ const formSchema = z.object({
 });
 
 export type InfographicData = {
-  keyPoints: string[];
+  keyConcepts: string[];
   summary: string;
   imageUrl: string;
 }
@@ -35,12 +35,12 @@ export async function generateInfographicAction(prevState: any, formData: FormDa
 
     const imageResult = await generateInfographicImage({
       summary: analysisResult.summary,
-      keyPoints: analysisResult.keyPoints,
+      keyConcepts: analysisResult.keyConcepts,
     });
 
     return {
       data: {
-        keyPoints: analysisResult.keyPoints,
+        keyConcepts: analysisResult.keyConcepts,
         summary: analysisResult.summary,
         imageUrl: imageResult.imageUrl,
       } as InfographicData,
