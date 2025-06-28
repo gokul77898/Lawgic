@@ -4,9 +4,10 @@ import type { InfographicData } from '@/app/actions';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { FileText, BrainCircuit, Lightbulb, Share2, Download, ListChecks } from 'lucide-react';
+import { FileText, Lightbulb, Share2, Download, ListChecks, Image as ImageIcon } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
+import Image from 'next/image';
 
 export function InfographicDisplay({ data }: { data: InfographicData | null }) {
   const { toast } = useToast();
@@ -26,10 +27,20 @@ export function InfographicDisplay({ data }: { data: InfographicData | null }) {
   }
 
   const handleDownload = () => {
-    toast({
-      title: "Feature Coming Soon!",
-      description: "Download functionality is being implemented. For now, you can use your browser's print-to-PDF feature.",
-    });
+    if (!data?.imageUrl) {
+        toast({
+          title: "Image not ready",
+          description: "The infographic image has not been generated yet.",
+          variant: "destructive",
+        });
+        return;
+    }
+    const link = document.createElement('a');
+    link.href = data.imageUrl;
+    link.download = 'lawgic-infographic.png';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
@@ -46,6 +57,24 @@ export function InfographicDisplay({ data }: { data: InfographicData | null }) {
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
+        <div>
+          <h3 className="flex items-center gap-2 font-headline text-lg font-semibold text-primary">
+            <ImageIcon className="w-5 h-5" />
+            Generated Infographic
+          </h3>
+          <div className="mt-3 relative aspect-[16/9] w-full overflow-hidden rounded-lg border bg-muted/30">
+            <Image
+                src={data.imageUrl}
+                alt="Generated Infographic"
+                fill
+                className="object-contain"
+                data-ai-hint="infographic legal"
+            />
+          </div>
+        </div>
+
+        <Separator />
+        
         <div>
           <h3 className="flex items-center gap-2 font-headline text-lg font-semibold text-primary">
             <ListChecks className="w-5 h-5" />
@@ -85,18 +114,6 @@ export function InfographicDisplay({ data }: { data: InfographicData | null }) {
               </li>
             ))}
           </ul>
-        </div>
-        
-        <Separator />
-
-        <div>
-          <h3 className="flex items-center gap-2 font-headline text-lg font-semibold text-primary">
-            <BrainCircuit className="w-5 h-5" />
-            Suggested Structure
-          </h3>
-          <blockquote className="mt-2 pl-4 border-l-2 border-accent text-sm italic text-muted-foreground">
-            "{data.structure}"
-          </blockquote>
         </div>
       </CardContent>
     </Card>

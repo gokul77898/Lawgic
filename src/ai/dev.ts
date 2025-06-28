@@ -3,3 +3,4 @@ config();
 
 import '@/ai/flows/extract-legal-concepts-flow.ts';
 import '@/ai/flows/generate-infographic-structure.ts';
+import '@/ai/flows/generate-infographic-image-flow.ts';
