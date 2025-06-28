@@ -35,17 +35,19 @@ const prompt = ai.definePrompt({
   name: 'generateInfographicStructurePrompt',
   input: {schema: GenerateInfographicStructureInputSchema},
   output: {schema: GenerateInfographicStructureOutputSchema},
-  prompt: `You are an expert in information design and data visualization. Your task is to convert complex legal text into a clear, logical, and visually compelling structure for an infographic.
+  prompt: `You are an expert in information design. Your task is to convert complex legal text into a simple, clear, and logical structure for an infographic.
 
-  Analyze the following legal text and generate a description of a detailed infographic structure. This structure will be used to create a high-resolution, HD-quality image. Your description must be precise and well-written, with no spelling or grammatical errors.
+  **Crucial Constraint:** Your output will be used by another AI to generate an image. Therefore, your proposed structure MUST be simple. Avoid complex layouts, overlapping elements, or dense text blocks. Prioritize clarity and simplicity to ensure the final image is readable.
 
-  **Include:**
-  - **Sections:** Break the information into logical sections with clear headings.
-  - **Visual Elements:** Suggest specific, high-quality icons or simple illustrations that clarify the concepts.
-  - **Flow & Relationships:** Describe how the sections and elements connect to tell a coherent story.
-  - **Text Content:** All suggested text (headings, labels, callouts) must be concise and perfectly proofread.
+  Analyze the legal text and describe a simple infographic structure.
+  
+  **Your description must include:**
+  - **Sections:** A logical breakdown with clear, concise headings. Use simple columnar or row-based layouts.
+  - **Visual Elements:** Suggest simple, distinct icons.
+  - **Flow:** Describe how the sections connect.
+  - **Text:** All text must be brief and meticulously proofread.
 
-  **IMPORTANT:** The text you output will be used *verbatim* in the final image. It must be perfect.
+  The final image quality depends entirely on the simplicity and clarity of your structural description.
 
   Legal Text: {{{legalText}}}
   `,

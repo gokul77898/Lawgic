@@ -43,29 +43,28 @@ const generateInfographicImageFlow = ai.defineFlow(
     const relationshipsList = relationships.map(r => `- ${r}`).join('\n');
 
     const prompt = `
-**TASK:** Generate a single, ultra-high-resolution, professional infographic image.
+**Primary Goal: TEXT CLARITY.** Your only job is to generate a professional infographic where the text is perfectly readable. If the text is not 100% sharp, clear, and legible, the result is a failure.
 
-**STYLE:**
-- Clean, simple, modern, vector-graphic style.
-- Sharp lines, simple icons.
-- Clear, high-contrast color palette.
+**Style:**
+- Use a simple, modern, vector-graphic style.
+- Use a high-contrast color palette.
+- **Font:** Use a standard, simple, sans-serif font like Arial or Helvetica. DO NOT use fancy or artistic fonts.
 
-**CONTENT AND LAYOUT INSTRUCTIONS:**
-- Use the following description as a precise guide for the layout and content:
+**Layout Guide:**
+- Use this description to guide the visual layout:
 ${structure}
 
-**TEXT TO RENDER (MUST BE PERFECT):**
+**Text to Render (EXACTLY AS WRITTEN):**
 - **Summary:** ${summary}
 - **Key Concepts:**
 ${conceptsList}
 - **Relationships:**
 ${relationshipsList}
 
-**ABSOLUTE RULES (FAILURE IS NOT AN OPTION):**
-1.  **TEXT ACCURACY:** Render ALL text from the "TEXT TO RENDER" section above. Spelling must be 100% correct. Every word must be identical to the source text.
-2.  **TEXT COMPLETENESS:** Do NOT cut off, truncate, or omit any text. All text must be fully visible and complete.
-3.  **TEXT LEGIBILITY:** All text must be perfectly sharp, legible, and easy to read. There must be zero blurriness, artifacts, or distortion.
-4.  **NO ADDITIONS:** Do not add any text that is not in the "TEXT TO RENDER" section.
+**ABSOLUTE RULES:**
+1.  **LEGIBILITY:** Text must be perfectly sharp and easy to read. No blurriness. No artifacts.
+2.  **COMPLETENESS:** Render all text provided. Do not cut off or omit any words.
+3.  **ACCURACY:** Spelling must be 100% correct, identical to the text provided.
 `;
     
     const {media} = await ai.generate({
