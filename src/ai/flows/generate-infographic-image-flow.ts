@@ -42,28 +42,30 @@ const generateInfographicImageFlow = ai.defineFlow(
     const conceptsList = concepts.map(c => `- ${c}`).join('\n');
     const relationshipsList = relationships.map(r => `- ${r}`).join('\n');
 
-    const prompt = `You are a world-class graphic designer specializing in data visualization. Your sole task is to create a professional, ultra-high-resolution infographic. You are an expert in creating clean, modern, vector-style graphics with perfectly legible text. You never cut off text or make spelling errors.
+    const prompt = `
+**TASK:** Generate a single, ultra-high-resolution, professional infographic image.
 
-Create an infographic based on the following information.
+**STYLE:**
+- Clean, simple, modern, vector-graphic style.
+- Sharp lines, simple icons.
+- Clear, high-contrast color palette.
 
-**Key Information to Render:**
-*   **Summary:** ${summary}
-*   **Key Concepts:**
-${conceptsList}
-*   **Relationships:**
-${relationshipsList}
-
-**Suggested Structure:**
-Use the following description as a guide for the layout:
+**CONTENT AND LAYOUT INSTRUCTIONS:**
+- Use the following description as a precise guide for the layout and content:
 ${structure}
 
-**CRITICAL INSTRUCTIONS:**
-1.  **Content Accuracy:** You MUST include all the text from the "Key Information to Render" section. Render every word with perfect spelling. DO NOT add, omit, or change any text from the key information. Ensure all content is fully visible and not cut-off.
-2.  **Style:** The image MUST be in a clean, simple, modern, vector-graphic style. Use sharp lines, simple icons, and a clear, high-contrast color palette.
-3.  **Text Quality:** All text MUST be perfectly sharp, legible, and easy to read. There should be zero blurriness, artifacts, or incomplete words.
-4.  **Layout:** Follow the "Suggested Structure" as a guide to lay out the information logically and visually.
+**TEXT TO RENDER (MUST BE PERFECT):**
+- **Summary:** ${summary}
+- **Key Concepts:**
+${conceptsList}
+- **Relationships:**
+${relationshipsList}
 
-The final output must be a visually appealing, professional, and flawlessly accurate infographic that contains all the provided key information.
+**ABSOLUTE RULES (FAILURE IS NOT AN OPTION):**
+1.  **TEXT ACCURACY:** Render ALL text from the "TEXT TO RENDER" section above. Spelling must be 100% correct. Every word must be identical to the source text.
+2.  **TEXT COMPLETENESS:** Do NOT cut off, truncate, or omit any text. All text must be fully visible and complete.
+3.  **TEXT LEGIBILITY:** All text must be perfectly sharp, legible, and easy to read. There must be zero blurriness, artifacts, or distortion.
+4.  **NO ADDITIONS:** Do not add any text that is not in the "TEXT TO RENDER" section.
 `;
     
     const {media} = await ai.generate({
