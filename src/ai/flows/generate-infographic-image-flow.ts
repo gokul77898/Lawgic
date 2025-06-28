@@ -12,9 +12,8 @@ import {ai} from '@/ai/genkit';
 import {z} from 'zod';
 
 const GenerateInfographicImageInputSchema = z.object({
-  summary: z.string().describe("A brief summary of the legal text."),
-  concepts: z.array(z.string()).describe("Key legal concepts extracted from the text."),
-  relationships: z.array(z.string()).describe("Relationships between the extracted concepts."),
+  summary: z.string().describe("A 2-3 sentence summary of the legal text."),
+  keyPoints: z.array(z.string()).describe("A list of the most important points from the text."),
 });
 export type GenerateInfographicImageInput = z.infer<typeof GenerateInfographicImageInputSchema>;
 
@@ -37,32 +36,29 @@ const generateInfographicImageFlow = ai.defineFlow(
     inputSchema: GenerateInfographicImageInputSchema,
     outputSchema: GenerateInfographicImageOutputSchema,
   },
-  async ({ summary, concepts, relationships }) => {
-    const conceptsList = concepts.map(c => `- ${c}`).join('\n');
-    const relationshipsList = relationships.map(r => `- ${r}`).join('\n');
+  async ({ summary, keyPoints }) => {
+    const keyPointsList = keyPoints.map(p => `- ${p}`).join('\n');
 
-    const prompt = `You are an expert graphic designer and information visualization specialist. Your mission is to transform the provided legal analysis into a visually stunning, professional, and easy-to-understand infographic.
+    const prompt = `You are an expert graphic designer tasked with creating a professional and visually engaging infographic. **This is not a flowchart.** Your goal is to present complex information in a beautiful, easy-to-digest format.
 
-**Your #1 Priority is Text Clarity & Accuracy:**
-- Every single word provided in the content section MUST be rendered on the image. Do not omit any text.
-- All text must be perfectly legible, spelled correctly, and complete. Use a clean, bold, sans-serif font like Helvetica or Arial.
-- The text is the most important part of the infographic. Visuals should support the text, not obscure it.
+**Your absolute #1 priority is text legibility.** All text must be rendered perfectly, with no spelling errors, and must be 100% complete. Use a clean, bold, sans-serif font.
 
-**Content to Visualize:**
-- **Main Title:** ${summary}
-- **Key Concepts:**
-${conceptsList}
-- **Key Relationships:**
-${relationshipsList}
+**Content for the Infographic:**
 
-**Visual Style Guide (Follow these instructions):**
-- **Theme:** Create a modern, professional, and clean design. Use a sophisticated color palette with good contrast. For example, a palette of blues, grays, and a single accent color.
-- **Layout:** Move beyond a simple list. Arrange the content in a visually engaging way. You could use a central element with radiating points for concepts, or distinct, stylishly designed cards for each section. Be creative but maintain clarity and a logical flow.
-- **Iconography:** For each "Key Concept", generate a simple, high-quality, relevant icon to visually represent it. The icon should be clean and immediately understandable. Place it next to the concept text.
-- **Visual Elements:** Use subtle design elements like background shapes, separators, and containers to organize the information clearly. Avoid overly complex illustrations or 3D effects. The style should be flat and modern.
-- **Proofread:** Before finalizing, double-check that all text is present, correct, and perfectly readable. This is critical.
+*   **Main Title:** (Use the provided summary as the main title for the infographic)
+    > ${summary}
 
-Generate an infographic based on these precise instructions. Do not generate a simple flowchart or a list. Create a real, professional infographic.
+*   **Key Points:** (These are the core pieces of information. Each should have its own section or card in the infographic)
+${keyPointsList}
+
+**Design and Layout Instructions (CRITICAL):**
+
+1.  **Layout:** Create a visually appealing layout. **Do NOT just make a vertical list.** Arrange the key points in stylishly designed content blocks or cards. You could use a two-column grid, a hub-and-spoke design, or another creative but clear arrangement.
+2.  **Iconography:** For each "Key Point", create a simple, modern, relevant icon to visually represent the idea. Place the icon clearly next to or above its corresponding text.
+3.  **Theme & Style:** Use a modern, clean, and professional theme. The color palette should be sophisticated (e.g., shades of blue, grey, with one strong accent color). Use background shapes and subtle dividers to create a polished look. The style must be flat and modern, not 3D.
+4.  **Final Check:** Before outputting the image, double-check that every single word from the "Content" section is present on the infographic, is perfectly readable, and correctly spelled.
+
+Produce a high-quality, high-resolution infographic based on these exact specifications.
 `;
     
     const {media} = await ai.generate({

@@ -2,9 +2,8 @@
 
 import type { InfographicData } from '@/app/actions';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { FileText, Lightbulb, Share2, Download, ListChecks, Image as ImageIcon } from 'lucide-react';
+import { FileText, Download, ListChecks, Image as ImageIcon } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import Image from 'next/image';
@@ -84,33 +83,17 @@ export function InfographicDisplay({ data }: { data: InfographicData | null }) {
         </div>
         
         <Separator />
-        
-        <div>
-          <h3 className="flex items-center gap-2 font-headline text-lg font-semibold text-primary">
-            <Lightbulb className="w-5 h-5" />
-            Key Concepts
-          </h3>
-          <div className="flex flex-wrap gap-2 mt-3">
-            {data.concepts.map((concept) => (
-              <Badge key={concept} variant="secondary" className="text-sm font-medium px-3 py-1 bg-accent/10 text-accent-foreground border-accent/20 shadow-sm">
-                {concept}
-              </Badge>
-            ))}
-          </div>
-        </div>
-        
-        <Separator />
 
         <div>
           <h3 className="flex items-center gap-2 font-headline text-lg font-semibold text-primary">
-            <Share2 className="w-5 h-5" />
-            Relationships
+            <ListChecks className="w-5 h-5" />
+            Key Points
           </h3>
-          <ul className="mt-3 space-y-2 text-sm text-foreground/80">
-            {data.relationships.map((relationship) => (
-              <li key={relationship} className="flex items-start">
+          <ul className="mt-3 space-y-3 text-sm text-foreground/80">
+            {data.keyPoints.map((point) => (
+              <li key={point} className="flex items-start">
                 <span className="text-accent mr-3 mt-1">&#9679;</span>
-                <span>{relationship}</span>
+                <span>{point}</span>
               </li>
             ))}
           </ul>

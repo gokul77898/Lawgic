@@ -1,4 +1,3 @@
-
 // src/ai/flows/extract-legal-concepts-flow.ts
 'use server';
 /**
@@ -18,11 +17,12 @@ const ExtractLegalConceptsInputSchema = z.object({
 export type ExtractLegalConceptsInput = z.infer<typeof ExtractLegalConceptsInputSchema>;
 
 const ExtractLegalConceptsOutputSchema = z.object({
-  concepts: z.array(z.string()).describe('Key legal concepts extracted from the text.'),
-  relationships: z
+  summary: z.string().describe('A 2-3 sentence summary of the legal text.'),
+  keyPoints: z
     .array(z.string())
-    .describe('Three to five key relationships between the concepts, each described in a short phrase.'),
-  summary: z.string().describe('A one-sentence summary of the legal text.'),
+    .describe(
+      'A bulleted list of the 4-6 most important points, findings, or arguments from the text. Each point should be a full sentence.'
+    ),
 });
 export type ExtractLegalConceptsOutput = z.infer<typeof ExtractLegalConceptsOutputSchema>;
 
@@ -34,17 +34,16 @@ const extractLegalConceptsPrompt = ai.definePrompt({
   name: 'extractLegalConceptsPrompt',
   input: {schema: ExtractLegalConceptsInputSchema},
   output: {schema: ExtractLegalConceptsOutputSchema},
-  prompt: `You are a meticulous expert legal analyst. Your task is to analyze legal text and distill it into its most essential components for an infographic. Your absolute top priority is extreme brevity and accuracy, as this text will be rendered on an image where space is limited.
+  prompt: `You are a meticulous expert legal analyst. Your task is to analyze the provided legal text and extract the most critical information to be used in a detailed infographic. The goal is to represent the core arguments of the text, not just keywords.
 
-1.  **Extract Concepts:** Identify the 3-5 most important legal concepts. These must be very short (1-3 words max).
-2.  **Extract Relationships:** Identify the 3 most critical relationships between these concepts. Describe each relationship in a very short, crisp phrase (3-5 words max).
-3.  **Summarize:** Write a single, extremely concise, one-sentence summary of the entire text.
-4.  **Proofread:** Meticulously check your output for any spelling or grammatical errors. The output must be flawless.
+1.  **Summarize:** Create a concise 2-3 sentence summary that captures the main topic and conclusion of the text.
+2.  **Extract Key Points:** Identify the 4 to 6 most important points, findings, or arguments from the text. Each point should be a complete sentence that clearly explains a core idea.
+3.  **Proofread:** Meticulously check your output for any spelling or grammatical errors. The output must be flawless.
 
 Legal Text:
 {{{legalText}}}
 
-The output must be a JSON object with three fields: 'concepts' (an array of 3-5 strings), 'relationships' (an array of 3 short phrases), and 'summary' (a single sentence). Ensure your analysis is accurate and extremely concise.`,
+The output must be a JSON object with two fields: 'summary' (a 2-3 sentence string), and 'keyPoints' (an array of 4-6 strings, where each string is a full sentence).`,
 });
 
 const extractLegalConceptsFlow = ai.defineFlow(

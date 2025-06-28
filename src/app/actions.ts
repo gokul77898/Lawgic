@@ -12,8 +12,7 @@ const formSchema = z.object({
 });
 
 export type InfographicData = {
-  concepts: string[];
-  relationships: string[];
+  keyPoints: string[];
   summary: string;
   imageUrl: string;
 }
@@ -32,19 +31,17 @@ export async function generateInfographicAction(prevState: any, formData: FormDa
   
   try {
     const legalText = validatedFields.data.legalText;
-    const conceptsResult = await extractLegalConcepts({ legalText });
+    const analysisResult = await extractLegalConcepts({ legalText });
 
     const imageResult = await generateInfographicImage({
-      summary: conceptsResult.summary,
-      concepts: conceptsResult.concepts,
-      relationships: conceptsResult.relationships,
+      summary: analysisResult.summary,
+      keyPoints: analysisResult.keyPoints,
     });
 
     return {
       data: {
-        concepts: conceptsResult.concepts,
-        relationships: conceptsResult.relationships,
-        summary: conceptsResult.summary,
+        keyPoints: analysisResult.keyPoints,
+        summary: analysisResult.summary,
         imageUrl: imageResult.imageUrl,
       } as InfographicData,
       error: null,
