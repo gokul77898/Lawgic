@@ -1,6 +1,6 @@
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
+import { useFormStatus } from 'react-dom';
 import { generateInfographicAction, type InfographicData } from '@/app/actions';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -8,7 +8,7 @@ import { InfographicDisplay } from '@/components/infographic-display';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Upload } from 'lucide-react';
-import { useEffect } from 'react';
+import { useActionState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
 const initialState: {
@@ -30,7 +30,7 @@ function SubmitButton() {
 }
 
 export function LawgicApp() {
-  const [state, formAction] = useFormState(generateInfographicAction, initialState);
+  const [state, formAction] = useActionState(generateInfographicAction, initialState);
   const { toast } = useToast();
 
   useEffect(() => {
