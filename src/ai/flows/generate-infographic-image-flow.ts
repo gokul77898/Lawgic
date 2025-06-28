@@ -40,7 +40,7 @@ const generateInfographicImageFlow = ai.defineFlow(
   async ({ summary, concepts, relationships, structure }) => {
     const {media} = await ai.generate({
       model: 'googleai/gemini-2.0-flash-preview-image-generation',
-      prompt: `Generate a visually clear and professional infographic based on the following legal analysis.
+      prompt: `Generate a visually clear and professional infographic in high resolution and HD clarity based on the following legal analysis. The image should be of the highest quality, with photorealistic details where appropriate.
 
       **Overall Summary:**
       ${summary}
@@ -54,7 +54,7 @@ const generateInfographicImageFlow = ai.defineFlow(
       **Suggested Structure:**
       ${structure}
 
-      The infographic should have a clean, modern design with a clear visual hierarchy. Use icons and simple graphics to represent concepts. The color palette should be professional and easy to read. Title the infographic "Legal Analysis". Ensure all text is legible.
+      The infographic should have a clean, modern design with a clear visual hierarchy. Use icons and simple graphics to represent concepts. The color palette should be professional and easy to read. Title the infographic "Legal Analysis". Ensure all text is legible and sharp.
       `,
       config: {
         responseModalities: ['TEXT', 'IMAGE'],
