@@ -1,11 +1,11 @@
 import {z} from 'zod';
 
-export const ScaleConceptSchema = z.object({
+export const KeyConceptSchema = z.object({
   concept: z
     .string()
-    .describe('The main concept for one side of the scale.'),
+    .describe('A short, descriptive title for the key concept.'),
   details: z
     .array(z.string())
-    .length(2, 'Must provide exactly 2 detailed supporting points.'),
+    .length(2, 'Must provide exactly 2 detailed supporting points for the concept.'),
 });
-export type ScaleConcept = z.infer<typeof ScaleConceptSchema>;
+export type KeyConcept = z.infer<typeof KeyConceptSchema>;

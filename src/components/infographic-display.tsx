@@ -3,7 +3,7 @@
 import type { InfographicData } from '@/app/actions';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { FileText, Download, Scale, BookOpen } from 'lucide-react';
+import { FileText, Download, Lightbulb, BookOpen } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import Image from 'next/image';
@@ -84,32 +84,36 @@ export function InfographicDisplay({ data }: { data: InfographicData | null }) {
       </CardHeader>
       <CardContent className="space-y-6">
         <div id="infographic-content-wrapper">
-           <div ref={infographicRef} className="relative aspect-[4/3] w-full overflow-hidden rounded-lg border bg-[#fdfaf5]">
+           <div ref={infographicRef} className="relative aspect-[4/3] w-full overflow-hidden rounded-lg border bg-[#f8f9fa]">
             <Image
                 src={data.imageUrl}
                 alt="Generated Infographic Background"
                 fill
-                className="object-contain"
-                data-ai-hint="infographic legal balance"
+                className="object-cover"
+                data-ai-hint="abstract geometric background"
             />
-            <div className="absolute inset-0 flex flex-col p-4 md:p-6 text-black">
+            <div className="absolute inset-0 grid grid-rows-3 p-4 md:p-8 text-black">
                 {/* Title positioned at the top */}
-                <div className="h-[25%] flex items-center justify-center text-center px-4">
-                    <h3 className="text-xl md:text-2xl font-bold font-headline leading-tight">{data.title}</h3>
+                <div className="row-span-1 flex items-center justify-center text-center">
+                    <h3 className="text-xl md:text-3xl font-bold font-headline leading-tight px-4">{data.title}</h3>
                 </div>
 
-                {/* Concepts container taking the rest of the space */}
-                <div className="relative flex-1">
-                    {/* Left text block */}
-                    <div className="absolute top-[5%] left-[5%] w-[40%] space-y-2 text-left">
-                        <p className="font-bold font-headline text-base md:text-lg">{data.leftScale.concept}</p>
-                        <p className="text-xs md:text-sm">{data.leftScale.details.join(' ')}</p>
+                {/* Concepts container */}
+                <div className="row-span-2 grid grid-cols-2 gap-x-4 md:gap-x-8 items-start">
+                    {/* Left concept */}
+                    <div className="space-y-2 text-left">
+                        <p className="font-bold font-headline text-base md:text-xl">{data.keyConceptA.concept}</p>
+                        <ul className="text-xs md:text-base space-y-1">
+                          {data.keyConceptA.details.map((detail, i) => <li key={i}>&bull; {detail}</li>)}
+                        </ul>
                     </div>
                     
-                    {/* Right text block */}
-                    <div className="absolute top-0 right-[5%] w-[40%] space-y-2 text-left">
-                        <p className="font-bold font-headline text-base md:text-lg">{data.rightScale.concept}</p>
-                        <p className="text-xs md:text-sm">{data.rightScale.details.join(' ')}</p>
+                    {/* Right concept */}
+                    <div className="space-y-2 text-left">
+                        <p className="font-bold font-headline text-base md:text-xl">{data.keyConceptB.concept}</p>
+                        <ul className="text-xs md:text-base space-y-1">
+                          {data.keyConceptB.details.map((detail, i) => <li key={i}>&bull; {detail}</li>)}
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -131,22 +135,22 @@ export function InfographicDisplay({ data }: { data: InfographicData | null }) {
         <div className="grid md:grid-cols-2 gap-6">
           <div>
             <h3 className="flex items-center gap-2 font-headline text-lg font-semibold text-primary">
-              <Scale className="w-5 h-5" />
-              {data.leftScale.concept}
+              <Lightbulb className="w-5 h-5" />
+              {data.keyConceptA.concept}
             </h3>
             <ul className="mt-3 space-y-2 text-sm list-disc list-inside">
-              {data.leftScale.details.map((item, index) => (
+              {data.keyConceptA.details.map((item, index) => (
                 <li key={index} className="text-muted-foreground">{item}</li>
               ))}
             </ul>
           </div>
           <div>
             <h3 className="flex items-center gap-2 font-headline text-lg font-semibold text-primary">
-              <Scale className="w-5 h-5" />
-              {data.rightScale.concept}
+              <Lightbulb className="w-5 h-5" />
+              {data.keyConceptB.concept}
             </h3>
             <ul className="mt-3 space-y-2 text-sm list-disc list-inside">
-              {data.rightScale.details.map((item, index) => (
+              {data.keyConceptB.details.map((item, index) => (
                 <li key={index} className="text-muted-foreground">{item}</li>
               ))}
             </ul>

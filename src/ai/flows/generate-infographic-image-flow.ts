@@ -1,6 +1,6 @@
 'use server';
 /**
- * @fileOverview Flow to generate an infographic image based on a 'Scales of Justice' template.
+ * @fileOverview Flow to generate an infographic background image.
  *
  * - generateInfographicImage - A function that handles the generation of the infographic image.
  * - GenerateInfographicImageInput - The input type for the generateInfographicImage function.
@@ -9,13 +9,13 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'zod';
-import { ScaleConceptSchema } from '@/ai/schemas';
+import { KeyConceptSchema } from '@/ai/schemas';
 
 
 const GenerateInfographicImageInputSchema = z.object({
   title: z.string(),
-  leftScale: ScaleConceptSchema,
-  rightScale: ScaleConceptSchema,
+  keyConceptA: KeyConceptSchema,
+  keyConceptB: KeyConceptSchema,
 });
 export type GenerateInfographicImageInput = z.infer<
   typeof GenerateInfographicImageInputSchema
@@ -43,24 +43,19 @@ const generateInfographicImageFlow = ai.defineFlow(
     outputSchema: GenerateInfographicImageOutputSchema,
   },
   async (input) => {
-    const prompt = `You are a professional graphic designer AI. Create a single, high-quality background illustration for an infographic, based on a specific template. **DO NOT RENDER ANY TEXT.**
+    const prompt = `You are a professional graphic designer AI. Create a single, high-quality background illustration for a professional infographic. **DO NOT RENDER ANY TEXT.**
 
 **VISUAL INSTRUCTIONS (Follow these exactly):**
 
-1.  **Style:** Clean, professional vector illustration with a slightly formal, judicial feel.
-2.  **Background Color:** Use a solid, light beige color (#fdfaf5).
-3.  **Central Element:** Draw a large, detailed illustration of the Scales of Justice. The scales must be perfectly balanced and centered horizontally in the image. The scale pans should be large. The overall scale graphic should occupy the central and right portions of the image, leaving significant empty space on the left.
-4.  **Top Decorative Elements:**
-    *   In the very top-left corner, draw a small, simple line-art icon of a balance scale.
-    *   In the very top-right corner, draw a small, simple line-art icon of a clock.
-    *   Below the top margin and centered horizontally, draw a small, detailed, official-looking crest or emblem. This should be positioned above the pivot point of the main scales graphic.
-5.  **Composition & Layout:**
-    *   The entire top area of the image needs to have enough empty space for a long, two-line title.
-    *   The left side of the image must have a large, clear rectangular area for a block of text. This area should be next to, but not overlapping, the central scales graphic.
-    *   The right scale pan must be drawn in a way that it can serve as a background for a block of text that will be overlaid later.
-    *   The overall composition must be balanced, clean, and professional.
+1.  **Style:** Modern, minimalist, and professional. Use clean lines, subtle gradients, and abstract geometric shapes. The feeling should be corporate and clean, like a high-end presentation slide.
+2.  **Background Color:** Use a solid, light neutral color like a very light grey (#f8f9fa) or off-white.
+3.  **Layout Elements:**
+    *   **Top Third:** This area should be mostly clean, reserved for a large title. You can add a subtle, thin horizontal line or a very light geometric pattern at the very top as a decorative header element.
+    *   **Bottom Two-Thirds:** Divide this area visually into two vertical columns. Use a thin, faint vertical line down the center to suggest the two columns. In each column, add some abstract, light-colored shapes (like circles, rectangles, or lines) to create visual interest. These shapes must be very subtle and not interfere with the text that will be overlaid.
+4.  **Color Palette:** Use a sophisticated and limited color palette. The primary background should be neutral. For the abstract shapes, use desaturated, professional colors like a soft blue, a muted teal, or a light charcoal grey. The colors should be harmonious and not distracting.
+5.  **Composition:** The overall composition must be balanced, spacious, and uncluttered. It is a background layer designed to make overlaid text look good. Ensure there is plenty of negative space.
 
-**CRITICAL:** The final image must be an illustration ONLY. **It must not contain any words, letters, or numbers.** The image is a background layer.`;
+**CRITICAL:** The final image must be an illustration ONLY. **It must not contain any words, letters, or numbers.** The image is a background layer for text that will be added later.`;
 
     const {media} = await ai.generate({
       model: 'googleai/gemini-2.0-flash-preview-image-generation',
