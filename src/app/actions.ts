@@ -1,3 +1,4 @@
+
 'use server';
 
 import { z } from 'zod';
@@ -32,13 +33,13 @@ async function parseFile(file: File): Promise<string> {
   const buffer = Buffer.from(await file.arrayBuffer());
   
   if (file.type === 'application/pdf') {
-    const pdf = require('pdf-parse');
+    const pdf = (await import('pdf-parse')).default;
     const data = await pdf(buffer);
     return data.text;
   }
   
   if (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || file.name.endsWith('.docx')) {
-    const mammoth = require('mammoth');
+    const mammoth = await import('mammoth');
     const result = await mammoth.extractRawText({ buffer });
     return result.value;
   }
