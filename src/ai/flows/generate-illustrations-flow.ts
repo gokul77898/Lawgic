@@ -10,13 +10,21 @@ const GenerateIllustrationsInputSchema = z.object({
   prompts: z
     .array(z.string())
     .describe('An array of text prompts for the illustrations.'),
+  style: z
+    .string()
+    .optional()
+    .describe(
+      'The artistic style for the illustrations (e.g., modern, classic, artistic).'
+    ),
 });
 export type GenerateIllustrationsInput = z.infer<
   typeof GenerateIllustrationsInputSchema
 >;
 
 const GenerateIllustrationsOutputSchema = z.object({
-  imageUrls: z.array(z.string()).describe('An array of data URIs for the generated images.'),
+  imageUrls: z
+    .array(z.string())
+    .describe('An array of data URIs for the generated images.'),
 });
 export type GenerateIllustrationsOutput = z.infer<
   typeof GenerateIllustrationsOutputSchema
@@ -28,13 +36,32 @@ export async function generateIllustrations(
   return generateIllustrationsFlow(input);
 }
 
-const generateSingleIllustration = async (prompt: string): Promise<string> => {
-  const fullPrompt = `Generate a single, simple, clear illustration for an infographic.
+const generateSingleIllustration = async (
+  prompt: string,
+  style?: string
+): Promise<string> => {
+  let styleInstructions = `
 - The style must be a modern, professional, flat illustration style.
+- The composition should be clean and uncluttered.
+  `;
+
+  if (style === 'classic') {
+    styleInstructions = `
+- The style must be a classic, detailed illustration with realistic shading and a professional tone.
+- The composition should be balanced and clear.
+    `;
+  } else if (style === 'artistic') {
+    styleInstructions = `
+- The style must be a vibrant and artistic watercolor illustration.
+- The composition should be expressive and creative.
+    `;
+  }
+
+  const fullPrompt = `Generate a single, simple, clear illustration for an infographic.
+${styleInstructions}
 - The subject of the illustration is: "${prompt}"
 - The illustration MUST be isolated on a plain, light beige background (#f5f1ec).
 - DO NOT include any text, letters, or numbers in the image.
-- The composition should be clean and uncluttered.
 - The image should be square.`;
 
   const {media} = await ai.generate({
@@ -57,8 +84,10 @@ const generateIllustrationsFlow = ai.defineFlow(
     inputSchema: GenerateIllustrationsInputSchema,
     outputSchema: GenerateIllustrationsOutputSchema,
   },
-  async ({prompts}) => {
-    const illustrationPromises = prompts.map(generateSingleIllustration);
+  async ({prompts, style}) => {
+    const illustrationPromises = prompts.map((p) =>
+      generateSingleIllustration(p, style)
+    );
     const imageUrls = await Promise.all(illustrationPromises);
     return {imageUrls};
   }

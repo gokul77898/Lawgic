@@ -10,6 +10,7 @@ const formSchema = z.object({
   legalText: z.string().optional(),
   // The file is received from FormData, so we check if it's a File object.
   file: z.instanceof(File).optional(),
+  style: z.enum(['modern', 'classic', 'artistic']).optional(),
 })
 .refine(data => !!data.legalText || (data.file && data.file.size > 0), {
   message: 'Please paste text or upload a file to continue.',
@@ -60,6 +61,7 @@ export async function generateInfographicAction(prevState: any, formData: FormDa
   const validatedFields = formSchema.safeParse({
     legalText: formData.get('legalText'),
     file: formData.get('file'),
+    style: formData.get('style'),
   });
 
   if (!validatedFields.success) {
@@ -72,6 +74,7 @@ export async function generateInfographicAction(prevState: any, formData: FormDa
   try {
     let legalText = validatedFields.data.legalText || '';
     const file = validatedFields.data.file;
+    const style = validatedFields.data.style || 'modern';
 
     if (file && file.size > 0) {
       legalText = await parseFile(file);
@@ -89,7 +92,7 @@ export async function generateInfographicAction(prevState: any, formData: FormDa
 
     // 2. Generate illustrations in parallel
     const illustrationPrompts = analysisResult.points.map(p => p.illustration_prompt);
-    const illustrationResult = await generateIllustrations({ prompts: illustrationPrompts });
+    const illustrationResult = await generateIllustrations({ prompts: illustrationPrompts, style });
 
     // 3. Combine results
     const pointsWithImages = analysisResult.points.map((point, index) => ({
