@@ -51,36 +51,41 @@ const generateInfographicImageFlow = ai.defineFlow(
     outputSchema: GenerateInfographicImageOutputSchema,
   },
   async ({summary, keyConcepts, relationships}) => {
-    const prompt = `You are an expert graphic designer tasked with creating a professional, clean, and modern infographic.
+    const prompt = `You are an expert graphic designer tasked with creating a professional, clean, and modern infographic with exceptional text clarity.
 
-**CRITICAL: YOUR #1 PRIORITY IS PERFECT TEXT LEGIBILITY.** All text must be 100% complete, spelled correctly, and rendered in a clean, bold, sans-serif font (like Arial or Helvetica). There must be no typos, garbled letters, or cut-off text.
+**NON-NEGOTIABLE CRITICAL #1 PRIORITY: PERFECT TEXT LEGIBILITY.**
+-   **Font:** All text MUST be rendered in a clean, bold, sans-serif font (like Arial or Helvetica).
+-   **Clarity:** The text must be large, sharp, and perfectly readable. There can be absolutely NO typos, garbled letters, cut-off text, or misspellings.
+-   **Contrast:** All text must be black or very dark grey for maximum contrast against the background.
 
 **Design and Layout Instructions (Follow these EXACTLY):**
 
 1.  **Background:** Use a solid, very light grey background (e.g., #f8f9fa).
-2.  **Color Palette:** Use a professional and cohesive color palette. The primary color for accents and icons should be a deep navy blue (e.g., #0a2540). Text should be black or very dark grey.
+2.  **Color Palette:** Use a professional and cohesive color palette. The primary color for accents and icons should be a deep navy blue (e.g., #0a2540).
 3.  **Main Title (Summary):**
     *   Place the provided "Summary" text at the very top of the infographic, centered.
-    *   Make it the largest text on the image.
+    *   **This must be the largest text on the image, in a bold, impactful font.**
     *   Place a short, navy blue horizontal line directly underneath the summary text.
-4.  **Key Concepts Grid (2x2):**
-    *   Create a 2x2 grid of four rounded rectangular cards below the main title. The cards should have a white background and a subtle drop shadow. Ensure adequate spacing between cards.
-    *   For each of the four cards, do the following:
-        *   **Icon:** At the top of the card, centered, place a simple, navy blue, line-art icon corresponding to the provided icon name.
-        *   **Concept Title:** Below the icon, display the "concept" text as a bold heading.
-        *   **Concept Description:** Below the heading, display the "description" text in a smaller, regular font.
-        *   All text within the card should be centered and perfectly readable.
+4.  **Key Concepts (Vertical List):**
+    *   Below the main title, create a vertical list of the four key concepts. Each concept should be its own distinct section, separated by a thin horizontal line.
+    *   **For each of the four sections, do the following:**
+        *   **Layout:** Use a horizontal layout for the content of each section.
+        *   **Icon:** On the far left, place a simple, navy blue, line-art icon that corresponds to the provided icon name.
+        *   **Text Block (to the right of the icon):**
+            *   **Alignment:** All text in this block (title and description) **MUST be left-aligned.**
+            *   **Concept Title:** Display the "concept" text as a **bold, large heading.**
+            *   **Concept Description:** Below the title, display the "description" text in a **clear, medium-large font.** The description font size should be noticeably larger than typical infographic text.
 5.  **Relationships Text:**
-    *   Place the "Relationships" text at the bottom of the infographic, below the grid.
-    *   Use a regular font size, smaller than the main title but slightly larger than the card descriptions.
-6.  **Overall Style:** The final image must look modern, clean, and professional. Ensure balanced whitespace and perfect alignment.
+    *   Place the "Relationships" text at the very bottom of the infographic, below the four concepts.
+    *   **Use a clean, readable font size that is easy to read.**
+6.  **Overall Style:** The final image must look modern, clean, and uncluttered. Ensure generous whitespace and perfect alignment of all elements.
 
 **Content for the Infographic:**
 
 *   **Summary:**
     > ${summary}
 
-*   **Key Concepts Grid (for the four cards):**
+*   **Key Concepts (Vertical List):**
     1.  **Icon:** ${keyConcepts[0].icon}
         **Concept:** ${keyConcepts[0].concept}
         **Description:** ${keyConcepts[0].description}
@@ -97,7 +102,7 @@ const generateInfographicImageFlow = ai.defineFlow(
 *   **Relationships:**
     > ${relationships}
 
-Produce a high-quality, high-resolution infographic based on these exact specifications.`;
+Produce a high-quality, high-resolution infographic based on these exact specifications. Failure to produce perfectly legible text will result in a failed generation.`;
 
     const {media} = await ai.generate({
       model: 'googleai/gemini-2.0-flash-preview-image-generation',
