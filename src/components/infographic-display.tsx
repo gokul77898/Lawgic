@@ -84,7 +84,7 @@ export function InfographicDisplay({ data }: { data: InfographicData | null }) {
       </CardHeader>
       <CardContent className="space-y-6">
         <div id="infographic-content-wrapper">
-          <div ref={infographicRef} className="relative aspect-[4/3] w-full overflow-hidden rounded-lg border bg-muted/30">
+           <div ref={infographicRef} className="relative aspect-[4/3] w-full overflow-hidden rounded-lg border bg-[#fdfaf5]">
             <Image
                 src={data.imageUrl}
                 alt="Generated Infographic Background"
@@ -93,13 +93,21 @@ export function InfographicDisplay({ data }: { data: InfographicData | null }) {
                 data-ai-hint="infographic legal balance"
             />
             <div className="absolute inset-0 flex flex-col p-4 md:p-6 text-black">
-                <h3 className="text-center text-xl md:text-2xl font-bold font-headline shrink-0">{data.title}</h3>
-                <div className="flex-grow flex items-center justify-around gap-4 pt-4">
-                    <div className="w-2/5 text-left space-y-2">
+                {/* Title positioned at the top */}
+                <div className="h-[25%] flex items-center justify-center text-center px-4">
+                    <h3 className="text-xl md:text-2xl font-bold font-headline leading-tight">{data.title}</h3>
+                </div>
+
+                {/* Concepts container taking the rest of the space */}
+                <div className="relative flex-1">
+                    {/* Left text block */}
+                    <div className="absolute top-[5%] left-[5%] w-[40%] space-y-2 text-left">
                         <p className="font-bold font-headline text-base md:text-lg">{data.leftScale.concept}</p>
                         <p className="text-xs md:text-sm">{data.leftScale.details.join(' ')}</p>
                     </div>
-                    <div className="w-2/5 text-left space-y-2">
+                    
+                    {/* Right text block */}
+                    <div className="absolute top-0 right-[5%] w-[40%] space-y-2 text-left">
                         <p className="font-bold font-headline text-base md:text-lg">{data.rightScale.concept}</p>
                         <p className="text-xs md:text-sm">{data.rightScale.details.join(' ')}</p>
                     </div>
