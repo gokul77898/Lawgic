@@ -43,39 +43,40 @@ const generateInfographicImageFlow = ai.defineFlow(
     outputSchema: GenerateInfographicImageOutputSchema,
   },
   async ({title, leftScale, rightScale}) => {
-    const prompt = `You are a graphic design AI. Create an infographic with a professional and clean style, based on the provided content. **Your output must be a single, high-quality image.**
+    const leftDetails = leftScale.details.join(' ');
+    const rightDetails = rightScale.details.join(' ');
 
-**VISUAL INSTRUCTIONS (Follow Precisely):**
+    const prompt = `You are a professional graphic designer AI. Create a single, high-quality infographic image. **The text quality and style are the most important things.**
 
-1.  **Overall Theme:** The infographic visually represents a balance of concepts using the 'Scales of Justice' metaphor.
-2.  **Background:** Use a light, off-white or very light beige background (e.g., #fdfaf5).
+**VISUAL INSTRUCTIONS (Follow these exactly):**
+
+1.  **Style:** Clean, professional vector illustration.
+2.  **Background:** Light beige color (#fdfaf5).
 3.  **Title:**
-    *   At the very top, centered, display the main title: "${title}".
-    *   Use a large, bold, black, sans-serif font.
+    *   Text: "${title}"
+    *   Placement: Top, center.
+    *   Font: **Large, bold, black, condensed sans-serif.**
 4.  **Central Graphic:**
-    *   The dominant visual element is a detailed illustration of the Scales of Justice in the center of the image.
-    *   Above the pivot of the scales, include a small, official-looking emblem or crest to give it a sense of authority.
-5.  **Left Side of Scale:**
-    *   On the left scale pan, place some stylized document icons.
-    *   To the left of the scale, clearly list the following text, connected by lines to the scale pan:
-        *   **Main Concept:** ${leftScale.concept}
-        *   **Detail 1:** ${leftScale.details[0]}
-        *   **Detail 2:** ${leftScale.details[1]}
-6.  **Right Side of Scale:**
-    *   On the right scale pan, place some stylized document icons.
-    *   To the right of the scale, clearly list the following text, connected by lines to the scale pan:
-        *   **Main Concept:** ${rightScale.concept}
-        *   **Detail 1:** ${rightScale.details[0]}
-        *   **Detail 2:** ${rightScale.details[1]}
-7.  **Icons:**
-    *   Place a simple, small line-art icon of a balance scale to the far left of the main graphic.
-    *   Place a simple, small line-art icon of a clock to the far right of the main graphic.
-8.  **Text & Style:**
-    *   All text must be perfectly legible, well-aligned, and free of any spelling errors or artifacts.
-    *   Use a consistent, professional sans-serif font throughout.
-    *   The layout should be balanced and aesthetically pleasing. Do not include any other text or elements not specified here.
+    *   A large, detailed illustration of the Scales of Justice in the center.
+    *   Place a small, official-looking crest above the pivot of the scales.
+    *   Put stylized documents on the scale pans.
+5.  **Left Side Text:**
+    *   Create two stacked text blocks to the left of the scale.
+    *   **Top Block:** "${leftScale.concept}"
+    *   **Bottom Block:** "${leftDetails}"
+    *   Font for both: **Bold, black, condensed sans-serif.**
+    *   Connect both text blocks to the left scale pan with thin lines.
+6.  **Right Side Text:**
+    *   Create two stacked text blocks to the right of the scale.
+    *   **Top Block:** "${rightScale.concept}"
+    *   **Bottom Block:** "${rightDetails}"
+    *   Font for both: **Bold, black, condensed sans-serif.**
+    *   Connect both text blocks to the right scale pan with thin lines.
+7.  **Corner Icons:**
+    *   Top-left: A small line-art icon of a balance scale.
+    *   Top-right: A small line-art icon of a clock.
 
-**CRITICAL:** The final image must look like a professionally designed infographic, not a simple drawing. Pay close attention to alignment, spacing, and font choice.`;
+**CRITICAL:** All text must be perfectly clear, bold, and easy to read, with no spelling errors. The final image must look professional and balanced.`;
 
     const {media} = await ai.generate({
       model: 'googleai/gemini-2.0-flash-preview-image-generation',
