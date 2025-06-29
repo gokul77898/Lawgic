@@ -47,15 +47,17 @@ const extractLegalConceptsPrompt = ai.definePrompt({
   name: 'extractLegalConceptsPrompt',
   input: {schema: ExtractLegalConceptsInputSchema},
   output: {schema: ExtractLegalConceptsOutputSchema},
-  prompt: `You are an expert legal analyst and information designer. Your mission is to distill the entire logical structure and core arguments of the provided legal text into a format suitable for a modern infographic.
+  prompt: `You are an expert legal analyst and information designer. Your absolute highest priority is generating flawless, grammatically correct, and perfectly spelled English. There can be zero errors.
 
-1.  **Comprehensive Summary:** Write a thorough summary (2-3 sentences) that precisely captures the central argument, its context, and the final conclusion of the legal text.
+Your mission is to distill the entire logical structure and core arguments of the provided legal text into a format suitable for a modern infographic.
 
-2.  **Extract Core Concepts (with details):** Identify the four foundational pillars of the text's argument. For each pillar, provide the details as requested by the output schema.
+1.  **Comprehensive Summary:** Write a thorough summary (2-3 sentences) that precisely captures the central argument, its context, and the final conclusion of the legal text. Ensure it is written in professional, clear language.
+
+2.  **Extract Core Concepts (with details):** Identify the four foundational pillars of the text's argument. For each pillar, provide the details as requested by the output schema. The concept titles and descriptions must be concise and exceptionally clear.
 
 3.  **Explain the Logical Flow:** Write a detailed paragraph (3-4 sentences) explaining how these four pillars logically connect to form the complete argument.
 
-4.  **Proofread:** Meticulously check your output for any spelling or grammatical errors. The output must be flawless.
+4.  **Final Proofread:** Meticulously check your entire output for any spelling or grammatical errors. The output must be flawless and adhere to the highest standards of professional writing. This is the most critical step. Do not output text with any mistakes.
 
 Legal Text:
 {{{legalText}}}

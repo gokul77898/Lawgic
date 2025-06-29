@@ -56,7 +56,7 @@ const generateInfographicImageFlow = ai.defineFlow(
 **CRITICAL RULE #1: TEXT MUST BE EXTREMELY LARGE AND PERFECTLY LEGIBLE.**
 - **This is the most important rule.** All text on the infographic must be significantly larger than standard. Prioritize readability above all else.
 - **Font:** Use a clean, bold, sans-serif font like Arial or Helvetica for all text.
-- **Clarity:** Text must be sharp, clear, and high-contrast (black or dark navy). There must be zero typos, artifacts, or cut-off letters.
+- **Clarity & Spelling:** Text must be sharp, high-contrast (black or dark navy), and perfectly aligned. There must be **ZERO TYPOS, SPELLING ERRORS, ARTIFACTS, or CUT-OFF LETTERS.** Re-read the input text to ensure you copy it perfectly.
 
 **LAYOUT AND CONTENT (Follow these instructions precisely):**
 
@@ -67,11 +67,12 @@ const generateInfographicImageFlow = ai.defineFlow(
     -   **Font Size:** Make this the LARGEST text on the image. It must be bold and impactful.
     -   Add a short navy blue line directly below the title.
 4.  **KEY CONCEPTS (Vertical List):**
-    -   Create a vertical list for the four key concepts below the title.
-    -   Separate each concept with a thin horizontal line.
+    -   Create a clean, well-spaced vertical list for the four key concepts below the title.
+    -   Separate each concept with a thin, navy blue horizontal line.
     -   For each of the four concepts:
-        -   **Icon:** On the left, show a simple, navy blue line-art icon for the concept.
+        -   **Icon:** On the far left, show a simple, navy blue line-art icon for the concept.
         -   **Text (to the right of the icon, left-aligned):**
+            -   **Alignment:** All text blocks (title and description) for all four concepts must share the exact same left-alignment to create a clean vertical line.
             -   **Concept Title:** Display the "concept" text. **Font Size: Make this a VERY LARGE, bold heading.**
             -   **Concept Description:** Display the "description" text below the title. **Font Size: Make this LARGE and easy to read.** It must be significantly larger than typical body text.
 5.  **RELATIONSHIPS TEXT:**
@@ -100,7 +101,7 @@ const generateInfographicImageFlow = ai.defineFlow(
 *   **Relationships:**
     > ${relationships}
 
-Re-read all rules. Your success is measured by how large and clear the text is. Do not fail on this primary objective.`;
+Re-read all rules. Your success is measured by how large, clear, and perfectly aligned the text is. Do not fail on these primary objectives.`;
 
     const {media} = await ai.generate({
       model: 'googleai/gemini-2.0-flash-preview-image-generation',
