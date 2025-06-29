@@ -8,7 +8,7 @@ import { InfographicDisplay } from '@/components/infographic-display';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Upload } from 'lucide-react';
-import { useActionState, useEffect } from 'react';
+import { useActionState, useEffect, useState, useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
 const initialState: {
@@ -32,6 +32,33 @@ function SubmitButton() {
 export function LawgicApp() {
   const [state, formAction] = useActionState(generateInfographicAction, initialState);
   const { toast } = useToast();
+  const [fileName, setFileName] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setFileName(file.name);
+      // Clear textarea if a file is selected
+      if (textAreaRef.current) {
+        textAreaRef.current.value = '';
+      }
+    } else {
+      setFileName(null);
+    }
+  };
+
+  const handleTextChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    // Clear file input if text is typed
+    if (event.target.value && fileName) {
+      setFileName(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
 
   useEffect(() => {
     if (typeof state.error === 'string') {
@@ -59,7 +86,8 @@ export function LawgicApp() {
                 name="legalText"
                 placeholder="Paste your legal document here..."
                 className="min-h-[250px] bg-background"
-                required
+                ref={textAreaRef}
+                onChange={handleTextChange}
               />
               {state.error && typeof state.error !== 'string' && state.error.legalText && (
                 <p className="text-sm font-medium text-destructive">{state.error.legalText[0]}</p>
@@ -70,12 +98,26 @@ export function LawgicApp() {
                 <Label htmlFor="file-upload" className="font-semibold">Or Upload a File</Label>
                 <div className="flex items-center justify-center w-full">
                     <label htmlFor="file-upload" className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-card hover:bg-accent/10 transition-colors">
-                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                        <div className="flex flex-col items-center justify-center pt-5 pb-6 text-center px-2">
                             <Upload className="w-8 h-8 mb-3 text-muted-foreground" />
-                            <p className="mb-2 text-sm text-muted-foreground"><span className="font-semibold text-primary">Click to upload</span> or drag and drop</p>
-                            <p className="text-xs text-muted-foreground">PDF, DOCX, TXT (coming soon)</p>
+                            {fileName ? (
+                              <p className="text-sm text-foreground font-medium">{fileName}</p>
+                            ): (
+                              <>
+                                <p className="mb-2 text-sm text-muted-foreground"><span className="font-semibold text-primary">Click to upload</span> or drag and drop</p>
+                                <p className="text-xs text-muted-foreground">PDF, DOCX, TXT</p>
+                              </>
+                            )}
                         </div>
-                        <input id="file-upload" type="file" className="hidden" disabled />
+                        <input 
+                          id="file-upload" 
+                          name="file" 
+                          type="file" 
+                          className="hidden" 
+                          ref={fileInputRef}
+                          onChange={handleFileChange}
+                          accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
+                        />
                     </label>
                 </div>
             </div>
