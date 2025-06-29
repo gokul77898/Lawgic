@@ -5,8 +5,6 @@ import { z } from 'zod';
 import { extractLegalConcepts } from '@/ai/flows/extract-legal-concepts-flow';
 import { generateInfographicImage } from '@/ai/flows/generate-infographic-image-flow';
 import type { KeyConcept } from '@/ai/schemas';
-const pdf = require('pdf-parse/index.js');
-const mammoth = require('mammoth');
 
 // This schema validates the form data has either text or a file.
 const formSchema = z.object({
@@ -31,11 +29,13 @@ async function parseFile(file: File): Promise<string> {
   const buffer = Buffer.from(await file.arrayBuffer());
   
   if (file.type === 'application/pdf') {
+    const pdf = require('pdf-parse/index.js');
     const data = await pdf(buffer);
     return data.text;
   }
   
   if (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || file.name.endsWith('.docx')) {
+    const mammoth = require('mammoth');
     const result = await mammoth.extractRawText({ buffer });
     return result.value;
   }
@@ -86,7 +86,7 @@ export async function generateInfographicAction(prevState: any, formData: FormDa
     return {
       data: {
         keyConcepts: analysisResult.keyConcepts,
-        summary: analysis.summary,
+        summary: analysisResult.summary,
         imageUrl: imageResult.imageUrl,
         relationships: analysisResult.relationships,
       } as InfographicData,
