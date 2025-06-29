@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useFormStatus } from 'react-dom';
@@ -10,7 +11,6 @@ import { Label } from '@/components/ui/label';
 import { Upload } from 'lucide-react';
 import { useActionState, useEffect, useState, useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 const initialState: {
   data: InfographicData | null;
@@ -121,24 +121,6 @@ export function LawgicApp() {
                         />
                     </label>
                 </div>
-            </div>
-
-            <div className="space-y-3">
-              <Label className="font-semibold">Illustration Style</Label>
-              <RadioGroup name="style" defaultValue="modern" className="flex flex-wrap gap-4">
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="modern" id="style-modern" />
-                  <Label htmlFor="style-modern">Modern</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="classic" id="style-classic" />
-                  <Label htmlFor="style-classic">Classic</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="artistic" id="style-artistic" />
-                  <Label htmlFor="style-artistic">Artistic</Label>
-                </div>
-              </RadioGroup>
             </div>
 
             <SubmitButton />
