@@ -84,24 +84,24 @@ export function InfographicDisplay({ data }: { data: InfographicData | null }) {
       </CardHeader>
       <CardContent className="space-y-6">
         <div id="infographic-content-wrapper">
-           <div ref={infographicRef} className="relative aspect-[4/3] w-full overflow-hidden rounded-lg border bg-[#f8f9fa]">
+           <div ref={infographicRef} className="relative aspect-[4/3] w-full overflow-hidden rounded-lg border bg-muted">
             <Image
                 src={data.imageUrl}
                 alt="Generated Infographic Background"
                 fill
                 className="object-cover"
-                data-ai-hint="abstract geometric background"
+                data-ai-hint="abstract colorful background"
             />
-            <div className="absolute inset-0 grid grid-rows-3 p-4 md:p-8 text-black">
+            <div className="absolute inset-0 grid grid-rows-3 p-4 md:p-8 text-white">
                 {/* Title positioned at the top */}
                 <div className="row-span-1 flex items-center justify-center text-center">
-                    <h3 className="text-xl md:text-3xl font-bold font-headline leading-tight px-4">{data.title}</h3>
+                    <h3 className="text-xl md:text-3xl font-bold font-headline leading-tight px-4 drop-shadow-lg">{data.title}</h3>
                 </div>
 
                 {/* Concepts container */}
                 <div className="row-span-2 grid grid-cols-2 gap-x-4 md:gap-x-8 items-start">
                     {/* Left concept */}
-                    <div className="space-y-2 text-left">
+                    <div className="space-y-2 text-left drop-shadow-md">
                         <p className="font-bold font-headline text-base md:text-xl">{data.keyConceptA.concept}</p>
                         <ul className="text-xs md:text-base space-y-1">
                           {data.keyConceptA.details.map((detail, i) => <li key={i}>&bull; {detail}</li>)}
@@ -109,7 +109,7 @@ export function InfographicDisplay({ data }: { data: InfographicData | null }) {
                     </div>
                     
                     {/* Right concept */}
-                    <div className="space-y-2 text-left">
+                    <div className="space-y-2 text-left drop-shadow-md">
                         <p className="font-bold font-headline text-base md:text-xl">{data.keyConceptB.concept}</p>
                         <ul className="text-xs md:text-base space-y-1">
                           {data.keyConceptB.details.map((detail, i) => <li key={i}>&bull; {detail}</li>)}
