@@ -2,7 +2,7 @@
 
 import { z } from 'zod';
 import { extractLegalConcepts } from '@/ai/flows/extract-legal-concepts-flow';
-import { generateInfographicImage } from '@/ai/flows/generate-infographic-image-flow';
+import { generateIllustrations } from '@/ai/flows/generate-illustrations-flow';
 import type { InfographicPoint } from '@/ai/schemas';
 
 // This schema validates the form data has either text or a file.
@@ -16,12 +16,15 @@ const formSchema = z.object({
   path: ['legalText'], // Attach error to the text field for simplicity
 });
 
+// Update InfographicPoint to include the imageUrl
+export type InfographicPointWithImage = Omit<InfographicPoint, 'illustration_prompt'> & {
+  imageUrl: string;
+};
 
 export type InfographicData = {
   title: string;
-  points: InfographicPoint[];
+  points: InfographicPointWithImage[];
   summary: string;
-  imageUrl: string;
 }
 
 async function parseFile(file: File): Promise<string> {
@@ -74,18 +77,25 @@ export async function generateInfographicAction(prevState: any, formData: FormDa
       }
     }
     
+    // 1. Extract concepts and illustration prompts
     const analysisResult = await extractLegalConcepts({ legalText });
 
-    const imageResult = await generateInfographicImage({
-      title: analysisResult.title,
-    });
+    // 2. Generate illustrations in parallel
+    const illustrationPrompts = analysisResult.points.map(p => p.illustration_prompt);
+    const illustrationResult = await generateIllustrations({ prompts: illustrationPrompts });
+
+    // 3. Combine results
+    const pointsWithImages = analysisResult.points.map((point, index) => ({
+      title: point.title,
+      description: point.description,
+      imageUrl: illustrationResult.imageUrls[index],
+    }));
 
     return {
       data: {
         title: analysisResult.title,
-        points: analysisResult.points,
+        points: pointsWithImages,
         summary: analysisResult.summary,
-        imageUrl: imageResult.imageUrl,
       } as InfographicData,
       error: null,
     };
