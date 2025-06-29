@@ -1,10 +1,9 @@
-// src/app/actions.ts
 'use server';
 
 import { z } from 'zod';
 import { extractLegalConcepts } from '@/ai/flows/extract-legal-concepts-flow';
 import { generateInfographicImage } from '@/ai/flows/generate-infographic-image-flow';
-import type { KeyConcept } from '@/ai/schemas';
+import type { ScaleConcept } from '@/ai/schemas';
 
 // This schema validates the form data has either text or a file.
 const formSchema = z.object({
@@ -19,10 +18,11 @@ const formSchema = z.object({
 
 
 export type InfographicData = {
-  keyConcepts: KeyConcept[];
+  title: string;
+  leftScale: ScaleConcept;
+  rightScale: ScaleConcept;
   summary: string;
   imageUrl: string;
-  relationships: string;
 }
 
 async function parseFile(file: File): Promise<string> {
@@ -78,17 +78,18 @@ export async function generateInfographicAction(prevState: any, formData: FormDa
     const analysisResult = await extractLegalConcepts({ legalText });
 
     const imageResult = await generateInfographicImage({
-      summary: analysisResult.summary,
-      keyConcepts: analysisResult.keyConcepts,
-      relationships: analysisResult.relationships,
+      title: analysisResult.title,
+      leftScale: analysisResult.leftScale,
+      rightScale: analysisResult.rightScale,
     });
 
     return {
       data: {
-        keyConcepts: analysisResult.keyConcepts,
+        title: analysisResult.title,
+        leftScale: analysisResult.leftScale,
+        rightScale: analysisResult.rightScale,
         summary: analysisResult.summary,
         imageUrl: imageResult.imageUrl,
-        relationships: analysisResult.relationships,
       } as InfographicData,
       error: null,
     };

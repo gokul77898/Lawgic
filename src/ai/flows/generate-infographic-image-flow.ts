@@ -1,7 +1,6 @@
-
 'use server';
 /**
- * @fileOverview Flow to generate an infographic image based on a specific visual template.
+ * @fileOverview Flow to generate an infographic image based on a 'Scales of Justice' template.
  *
  * - generateInfographicImage - A function that handles the generation of the infographic image.
  * - GenerateInfographicImageInput - The input type for the generateInfographicImage function.
@@ -10,20 +9,13 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'zod';
-import { KeyConceptSchema } from '@/ai/schemas';
+import { ScaleConceptSchema } from '@/ai/schemas';
 
 
 const GenerateInfographicImageInputSchema = z.object({
-  summary: z.string().describe('A one-sentence summary of the legal text.'),
-  keyConcepts: z
-    .array(KeyConceptSchema)
-    .length(4)
-    .describe('A list of four key concepts, each with a concept, description, and icon name.'),
-  relationships: z
-    .string()
-    .describe(
-      'A short paragraph explaining the connection between the concepts.'
-    ),
+  title: z.string(),
+  leftScale: ScaleConceptSchema,
+  rightScale: ScaleConceptSchema,
 });
 export type GenerateInfographicImageInput = z.infer<
   typeof GenerateInfographicImageInputSchema
@@ -50,58 +42,40 @@ const generateInfographicImageFlow = ai.defineFlow(
     inputSchema: GenerateInfographicImageInputSchema,
     outputSchema: GenerateInfographicImageOutputSchema,
   },
-  async ({summary, keyConcepts, relationships}) => {
-    const prompt = `You are a graphic design AI. Your only mission is to generate an infographic based on the provided content.
+  async ({title, leftScale, rightScale}) => {
+    const prompt = `You are a graphic design AI. Create an infographic with a professional and clean style, based on the provided content. **Your output must be a single, high-quality image.**
 
-**CRITICAL RULE #1: TEXT MUST BE EXTREMELY LARGE AND PERFECTLY LEGIBLE.**
-- **This is the most important rule.** All text on the infographic must be significantly larger than standard. Prioritize readability above all else.
-- **Font:** Use a clean, bold, sans-serif font like Arial or Helvetica for all text.
-- **Clarity & Spelling:** Text must be sharp, high-contrast (black or dark navy), and perfectly aligned. There must be **ZERO TYPOS, SPELLING ERRORS, ARTIFACTS, or CUT-OFF LETTERS.** Re-read the input text to ensure you copy it perfectly.
+**VISUAL INSTRUCTIONS (Follow Precisely):**
 
-**LAYOUT AND CONTENT (Follow these instructions precisely):**
+1.  **Overall Theme:** The infographic visually represents a balance of concepts using the 'Scales of Justice' metaphor.
+2.  **Background:** Use a light, off-white or very light beige background (e.g., #fdfaf5).
+3.  **Title:**
+    *   At the very top, centered, display the main title: "${title}".
+    *   Use a large, bold, black, sans-serif font.
+4.  **Central Graphic:**
+    *   The dominant visual element is a detailed illustration of the Scales of Justice in the center of the image.
+    *   Above the pivot of the scales, include a small, official-looking emblem or crest to give it a sense of authority.
+5.  **Left Side of Scale:**
+    *   On the left scale pan, place some stylized document icons.
+    *   To the left of the scale, clearly list the following text, connected by lines to the scale pan:
+        *   **Main Concept:** ${leftScale.concept}
+        *   **Detail 1:** ${leftScale.details[0]}
+        *   **Detail 2:** ${leftScale.details[1]}
+6.  **Right Side of Scale:**
+    *   On the right scale pan, place some stylized document icons.
+    *   To the right of the scale, clearly list the following text, connected by lines to the scale pan:
+        *   **Main Concept:** ${rightScale.concept}
+        *   **Detail 1:** ${rightScale.details[0]}
+        *   **Detail 2:** ${rightScale.details[1]}
+7.  **Icons:**
+    *   Place a simple, small line-art icon of a balance scale to the far left of the main graphic.
+    *   Place a simple, small line-art icon of a clock to the far right of the main graphic.
+8.  **Text & Style:**
+    *   All text must be perfectly legible, well-aligned, and free of any spelling errors or artifacts.
+    *   Use a consistent, professional sans-serif font throughout.
+    *   The layout should be balanced and aesthetically pleasing. Do not include any other text or elements not specified here.
 
-1.  **BACKGROUND:** A solid, very light grey background (#f8f9fa).
-2.  **COLOR SCHEME:** Use a professional navy blue (#0a2540) for icons and accents.
-3.  **MAIN TITLE (Summary):**
-    -   Place the "Summary" text at the top, centered.
-    -   **Font Size:** Make this the LARGEST text on the image. It must be bold and impactful.
-    -   Add a short navy blue line directly below the title.
-4.  **KEY CONCEPTS (Vertical List):**
-    -   Create a clean, well-spaced vertical list for the four key concepts below the title.
-    -   Separate each concept with a thin, navy blue horizontal line.
-    -   For each of the four concepts:
-        -   **Icon:** On the far left, show a simple, navy blue line-art icon for the concept.
-        -   **Text (to the right of the icon, left-aligned):**
-            -   **Alignment:** All text blocks (title and description) for all four concepts must share the exact same left-alignment to create a clean vertical line.
-            -   **Concept Title:** Display the "concept" text. **Font Size: Make this a VERY LARGE, bold heading.**
-            -   **Concept Description:** Display the "description" text below the title. **Font Size: Make this LARGE and easy to read.** It must be significantly larger than typical body text.
-5.  **RELATIONSHIPS TEXT:**
-    -   Place this text at the bottom of the infographic.
-    -   **Font Size: Make this LARGE and perfectly readable.**
-
-**INFOGRAPHIC CONTENT:**
-
-*   **Summary:**
-    > ${summary}
-
-*   **Key Concepts (Vertical List):**
-    1.  **Icon:** ${keyConcepts[0].icon}
-        **Concept:** ${keyConcepts[0].concept}
-        **Description:** ${keyConcepts[0].description}
-    2.  **Icon:** ${keyConcepts[1].icon}
-        **Concept:** ${keyConcepts[1].concept}
-        **Description:** ${keyConcepts[1].description}
-    3.  **Icon:** ${keyConcepts[2].icon}
-        **Concept:** ${keyConcepts[2].concept}
-        **Description:** ${keyConcepts[2].description}
-    4.  **Icon:** ${keyConcepts[3].icon}
-        **Concept:** ${keyConcepts[3].concept}
-        **Description:** ${keyConcepts[3].description}
-
-*   **Relationships:**
-    > ${relationships}
-
-Re-read all rules. Your success is measured by how large, clear, and perfectly aligned the text is. Do not fail on these primary objectives.`;
+**CRITICAL:** The final image must look like a professionally designed infographic, not a simple drawing. Pay close attention to alignment, spacing, and font choice.`;
 
     const {media} = await ai.generate({
       model: 'googleai/gemini-2.0-flash-preview-image-generation',

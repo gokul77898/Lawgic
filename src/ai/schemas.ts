@@ -1,16 +1,11 @@
 import {z} from 'zod';
 
-export const KeyConceptSchema = z.object({
+export const ScaleConceptSchema = z.object({
   concept: z
     .string()
-    .describe('A short, punchy title for the key concept (2-4 words).'),
-  description: z
-    .string()
-    .describe('A single, clear sentence explaining the concept.'),
-  icon: z
-    .string()
-    .describe(
-      "A simple, one or two-word name for a line-art icon that visually represents the concept (e.g., 'Gavel', 'Contract', 'Scales of Justice', 'Magnifying Glass')."
-    ),
+    .describe('The main concept for one side of the scale (2-4 words).'),
+  details: z
+    .array(z.string())
+    .length(2, 'Must provide exactly 2 detail points (4-6 words each).'),
 });
-export type KeyConcept = z.infer<typeof KeyConceptSchema>;
+export type ScaleConcept = z.infer<typeof ScaleConceptSchema>;

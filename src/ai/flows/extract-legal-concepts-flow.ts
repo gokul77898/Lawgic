@@ -1,16 +1,11 @@
-// src/ai/flows/extract-legal-concepts-flow.ts
 'use server';
 /**
- * @fileOverview Extracts a summary and key concepts from legal text for an infographic.
- *
- * - extractLegalConcepts - A function that analyzes legal text.
- * - ExtractLegalConceptsInput - The input type for the extractLegalConcepts function.
- * - ExtractLegalConceptsOutput - The return type for the extractLegalConceptsOutput function.
+ * @fileOverview Extracts key information from legal text to populate a 'Scales of Justice' infographic.
  */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'zod';
-import { KeyConceptSchema } from '@/ai/schemas';
+import { ScaleConceptSchema } from '@/ai/schemas';
 
 const ExtractLegalConceptsInputSchema = z.object({
   legalText: z.string().describe('The legal text to analyze.'),
@@ -18,22 +13,18 @@ const ExtractLegalConceptsInputSchema = z.object({
 export type ExtractLegalConceptsInput = z.infer<typeof ExtractLegalConceptsInputSchema>;
 
 const ExtractLegalConceptsOutputSchema = z.object({
-  summary: z
+  title: z
     .string()
     .describe(
-      'A comprehensive summary of the legal text, capturing the main argument and conclusion in 2-3 sentences.'
+      "The main title for the infographic, from the text's central theme (2-3 words)."
     ),
-  keyConcepts: z
-    .array(KeyConceptSchema)
-    .length(4, 'Must provide exactly 4 key concepts')
-    .describe(
-      'A list of the four most important, core concepts from the text, each with a title, description, and icon name.'
-    ),
-  relationships: z
-    .string()
-    .describe(
-      'A detailed paragraph (3-4 sentences) explaining the nuances of how the key concepts are interconnected and build upon each other to support the main summary.'
-    ),
+  leftScale: ScaleConceptSchema.describe(
+    "Represents one side of the argument/topic."
+  ),
+  rightScale: ScaleConceptSchema.describe(
+    'Represents the opposing side of the argument/topic.'
+  ),
+  summary: z.string().describe('A one-sentence summary of the entire legal text.'),
 });
 export type ExtractLegalConceptsOutput = z.infer<typeof ExtractLegalConceptsOutputSchema>;
 
@@ -47,22 +38,18 @@ const extractLegalConceptsPrompt = ai.definePrompt({
   name: 'extractLegalConceptsPrompt',
   input: {schema: ExtractLegalConceptsInputSchema},
   output: {schema: ExtractLegalConceptsOutputSchema},
-  prompt: `You are an expert legal analyst and information designer. Your absolute highest priority is generating flawless, grammatically correct, and perfectly spelled English. There can be zero errors.
+  prompt: `Analyze the provided legal text. Your goal is to extract the core components to build an infographic based on a 'Scales of Justice' visual metaphor.
 
-Your mission is to distill the entire logical structure and core arguments of the provided legal text into a format suitable for a modern infographic.
+You MUST extract the following information:
+1.  **Title:** A 2-3 word title summarizing the main topic.
+2.  **Left Scale Concept:** Identify the primary concept or party. Provide a 2-4 word title for it. Then, list exactly two concise, 4-6 word supporting points for this concept.
+3.  **Right Scale Concept:** Identify the opposing or corresponding concept/party. Provide a 2-4 word title for it. Then, list exactly two concise, 4-6 word supporting points for this concept.
+4.  **Summary:** A brief, one-sentence summary of the entire text.
 
-1.  **Comprehensive Summary:** Write a thorough summary (2-3 sentences) that precisely captures the central argument, its context, and the final conclusion of the legal text. Ensure it is written in professional, clear language.
-
-2.  **Extract Core Concepts (with details):** Identify the four foundational pillars of the text's argument. For each pillar, provide the details as requested by the output schema. The concept titles and descriptions must be concise and exceptionally clear.
-
-3.  **Explain the Logical Flow:** Write a detailed paragraph (3-4 sentences) explaining how these four pillars logically connect to form the complete argument.
-
-4.  **Final Proofread:** Meticulously check your entire output for any spelling or grammatical errors. The output must be flawless and adhere to the highest standards of professional writing. This is the most critical step. Do not output text with any mistakes.
+Ensure your output is structured as a JSON object matching the requested schema. All text must be grammatically perfect.
 
 Legal Text:
-{{{legalText}}}
-
-The output must be a JSON object that adheres to the provided schema.`,
+{{{legalText}}}`,
 });
 
 const extractLegalConceptsFlow = ai.defineFlow(
