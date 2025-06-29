@@ -5,8 +5,8 @@ import { z } from 'zod';
 import { extractLegalConcepts } from '@/ai/flows/extract-legal-concepts-flow';
 import { generateInfographicImage } from '@/ai/flows/generate-infographic-image-flow';
 import type { KeyConcept } from '@/ai/schemas';
-import pdf from 'pdf-parse';
-import mammoth from 'mammoth';
+const pdf = require('pdf-parse/index.js');
+const mammoth = require('mammoth');
 
 // This schema validates the form data has either text or a file.
 const formSchema = z.object({
@@ -86,7 +86,7 @@ export async function generateInfographicAction(prevState: any, formData: FormDa
     return {
       data: {
         keyConcepts: analysisResult.keyConcepts,
-        summary: analysisResult.summary,
+        summary: analysis.summary,
         imageUrl: imageResult.imageUrl,
         relationships: analysisResult.relationships,
       } as InfographicData,
