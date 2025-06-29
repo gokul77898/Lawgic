@@ -51,36 +51,34 @@ const generateInfographicImageFlow = ai.defineFlow(
     outputSchema: GenerateInfographicImageOutputSchema,
   },
   async ({summary, keyConcepts, relationships}) => {
-    const prompt = `You are an expert graphic designer tasked with creating a professional, clean, and modern infographic with exceptional text clarity.
+    const prompt = `You are a graphic design AI. Your only mission is to generate an infographic based on the provided content.
 
-**NON-NEGOTIABLE CRITICAL #1 PRIORITY: PERFECT TEXT LEGIBILITY.**
--   **Font:** All text MUST be rendered in a clean, bold, sans-serif font (like Arial or Helvetica).
--   **Clarity:** The text must be large, sharp, and perfectly readable. There can be absolutely NO typos, garbled letters, cut-off text, or misspellings.
--   **Contrast:** All text must be black or very dark grey for maximum contrast against the background.
+**CRITICAL RULE #1: TEXT MUST BE EXTREMELY LARGE AND PERFECTLY LEGIBLE.**
+- **This is the most important rule.** All text on the infographic must be significantly larger than standard. Prioritize readability above all else.
+- **Font:** Use a clean, bold, sans-serif font like Arial or Helvetica for all text.
+- **Clarity:** Text must be sharp, clear, and high-contrast (black or dark navy). There must be zero typos, artifacts, or cut-off letters.
 
-**Design and Layout Instructions (Follow these EXACTLY):**
+**LAYOUT AND CONTENT (Follow these instructions precisely):**
 
-1.  **Background:** Use a solid, very light grey background (e.g., #f8f9fa).
-2.  **Color Palette:** Use a professional and cohesive color palette. The primary color for accents and icons should be a deep navy blue (e.g., #0a2540).
-3.  **Main Title (Summary):**
-    *   Place the provided "Summary" text at the very top of the infographic, centered.
-    *   **This must be the largest text on the image, in a bold, impactful font.**
-    *   Place a short, navy blue horizontal line directly underneath the summary text.
-4.  **Key Concepts (Vertical List):**
-    *   Below the main title, create a vertical list of the four key concepts. Each concept should be its own distinct section, separated by a thin horizontal line.
-    *   **For each of the four sections, do the following:**
-        *   **Layout:** Use a horizontal layout for the content of each section.
-        *   **Icon:** On the far left, place a simple, navy blue, line-art icon that corresponds to the provided icon name.
-        *   **Text Block (to the right of the icon):**
-            *   **Alignment:** All text in this block (title and description) **MUST be left-aligned.**
-            *   **Concept Title:** Display the "concept" text as a **bold, large heading.**
-            *   **Concept Description:** Below the title, display the "description" text in a **clear, medium-large font.** The description font size should be noticeably larger than typical infographic text.
-5.  **Relationships Text:**
-    *   Place the "Relationships" text at the very bottom of the infographic, below the four concepts.
-    *   **Use a clean, readable font size that is easy to read.**
-6.  **Overall Style:** The final image must look modern, clean, and uncluttered. Ensure generous whitespace and perfect alignment of all elements.
+1.  **BACKGROUND:** A solid, very light grey background (#f8f9fa).
+2.  **COLOR SCHEME:** Use a professional navy blue (#0a2540) for icons and accents.
+3.  **MAIN TITLE (Summary):**
+    -   Place the "Summary" text at the top, centered.
+    -   **Font Size:** Make this the LARGEST text on the image. It must be bold and impactful.
+    -   Add a short navy blue line directly below the title.
+4.  **KEY CONCEPTS (Vertical List):**
+    -   Create a vertical list for the four key concepts below the title.
+    -   Separate each concept with a thin horizontal line.
+    -   For each of the four concepts:
+        -   **Icon:** On the left, show a simple, navy blue line-art icon for the concept.
+        -   **Text (to the right of the icon, left-aligned):**
+            -   **Concept Title:** Display the "concept" text. **Font Size: Make this a VERY LARGE, bold heading.**
+            -   **Concept Description:** Display the "description" text below the title. **Font Size: Make this LARGE and easy to read.** It must be significantly larger than typical body text.
+5.  **RELATIONSHIPS TEXT:**
+    -   Place this text at the bottom of the infographic.
+    -   **Font Size: Make this LARGE and perfectly readable.**
 
-**Content for the Infographic:**
+**INFOGRAPHIC CONTENT:**
 
 *   **Summary:**
     > ${summary}
@@ -102,7 +100,7 @@ const generateInfographicImageFlow = ai.defineFlow(
 *   **Relationships:**
     > ${relationships}
 
-Produce a high-quality, high-resolution infographic based on these exact specifications. Failure to produce perfectly legible text will result in a failed generation.`;
+Re-read all rules. Your success is measured by how large and clear the text is. Do not fail on this primary objective.`;
 
     const {media} = await ai.generate({
       model: 'googleai/gemini-2.0-flash-preview-image-generation',
