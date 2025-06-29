@@ -1,4 +1,3 @@
-'use server';
 /**
  * @fileOverview Defines the data schemas used across the application's AI flows.
  */
