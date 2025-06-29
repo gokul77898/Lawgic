@@ -31,7 +31,7 @@ async function parseFile(file: File): Promise<string> {
   const buffer = Buffer.from(await file.arrayBuffer());
   
   if (file.type === 'application/pdf') {
-    const pdf = require('pdf-parse/index.js');
+    const pdf = require('pdf-parse');
     const data = await pdf(buffer);
     return data.text;
   }
@@ -50,6 +50,13 @@ async function parseFile(file: File): Promise<string> {
 }
 
 export async function generateInfographicAction(prevState: any, formData: FormData) {
+  if (!process.env.GOOGLE_API_KEY || process.env.GOOGLE_API_KEY === 'YOUR_API_KEY_HERE') {
+    return {
+      data: null,
+      error: 'Google API Key not found. Please add GOOGLE_API_KEY to your .env file.',
+    };
+  }
+  
   const validatedFields = formSchema.safeParse({
     legalText: formData.get('legalText'),
     file: formData.get('file'),
