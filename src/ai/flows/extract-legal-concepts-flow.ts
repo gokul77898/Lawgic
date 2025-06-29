@@ -21,8 +21,8 @@ const ExtractLegalConceptsOutputSchema = z.object({
   points: z
     .array(InfographicPointSchema)
     .min(3, 'Must provide at least 3 key points.')
-    .max(6, 'Must provide no more than 6 key points.')
-    .describe('An array of 3 to 6 key points from the text.'),
+    .max(4, 'Must provide no more than 4 key points.')
+    .describe('An array of 3 to 4 key points from the text.'),
   summary: z.string().describe('A detailed, one-paragraph summary of the entire legal text.'),
 });
 export type ExtractLegalConceptsOutput = z.infer<typeof ExtractLegalConceptsOutputSchema>;
@@ -41,7 +41,7 @@ const extractLegalConceptsPrompt = ai.definePrompt({
 
 You MUST extract the following information:
 1.  **Title:** A concise but descriptive title that captures the central theme of the text.
-2.  **Key Points:** Identify between 3 and 6 of the most critical points, arguments, or pieces of information from the text. For each point, provide:
+2.  **Key Points:** Identify between 3 and 4 of the most critical points, arguments, or pieces of information from the text. For each point, provide:
     - A short title.
     - A one-sentence description.
     - A simple, concise prompt for an AI to generate an illustration (illustration_prompt). For example: "A man giving a speech", "A government building with columns", "Two people arguing".
