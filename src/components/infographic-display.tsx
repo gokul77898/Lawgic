@@ -2,7 +2,7 @@
 
 import type { InfographicData } from '@/app/actions';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { BookOpen, Download, FileText, Scale } from 'lucide-react';
+import { BookOpen, Download, FileText } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import Image from 'next/image';
 import { Button } from './ui/button';
@@ -97,10 +97,6 @@ export function InfographicDisplay({ data }: { data: InfographicData | null }) {
         <div ref={infographicRef} className="rounded-lg border bg-[#f5f1ec] p-4 sm:p-6 md:p-8 text-[#4a2e2a]">
           {/* Infographic Header */}
           <header className="flex flex-col items-center mb-8">
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider mb-4 opacity-70">
-              <Scale className="w-5 h-5" />
-              <span>Government of Lawgic</span>
-            </div>
             <div className="w-full bg-[#8c5a4f] text-white font-headline text-center py-3 px-4 rounded-lg shadow-md">
               <h1 className="text-xl md:text-2xl lg:text-3xl font-bold uppercase tracking-wide">{data.title}</h1>
             </div>
