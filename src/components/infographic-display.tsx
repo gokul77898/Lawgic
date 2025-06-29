@@ -2,11 +2,71 @@
 
 import type { InfographicData } from '@/app/actions';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { BookOpen, FileText, Scale } from 'lucide-react';
+import { BookOpen, Download, FileText, Scale } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import Image from 'next/image';
+import { Button } from './ui/button';
+import { toPng } from 'html-to-image';
+import { useRef } from 'react';
+import { useToast } from '@/hooks/use-toast';
+
+async function downloadImage(dataUrl: string, fileName: string) {
+  const link = document.createElement('a');
+  link.download = fileName;
+  link.href = dataUrl;
+  link.click();
+}
+
+async function fetchFont(url: string) {
+    const response = await fetch(url);
+    const cssText = await response.text();
+    return cssText;
+}
 
 export function InfographicDisplay({ data }: { data: InfographicData | null }) {
+  const infographicRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
+
+  const handleDownload = async () => {
+    const node = infographicRef.current;
+    if (!node) return;
+
+    try {
+      // Wait for all images inside the node to load fully.
+      // This prevents blank images in the downloaded PNG.
+      const images = node.getElementsByTagName('img');
+      await Promise.all(
+        Array.from(images).map((img) => {
+          if (img.complete) return Promise.resolve();
+          return new Promise((resolve) => {
+            img.onload = resolve;
+            img.onerror = resolve; // Also resolve on error to not block forever
+          });
+        })
+      );
+
+      const fontCss = await Promise.all([
+        fetchFont('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap'),
+        fetchFont('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap'),
+      ]);
+
+      const dataUrl = await toPng(node, {
+        cacheBust: true,
+        fontEmbedCSS: fontCss.join('\n'),
+        pixelRatio: 2,
+      });
+      downloadImage(dataUrl, 'lawgic-infographic.png');
+    } catch (error) {
+      console.error('Download failed:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Download Failed',
+        description: 'Could not generate the infographic image. Please try again.',
+      });
+    }
+  };
+
+
   if (!data) {
     return (
       <Card className="h-full flex flex-col items-center justify-center text-center p-8 border-dashed shadow-none">
@@ -23,12 +83,18 @@ export function InfographicDisplay({ data }: { data: InfographicData | null }) {
 
   return (
     <Card className="h-full shadow-lg overflow-hidden">
-      <CardHeader>
-        <CardTitle className="font-headline text-2xl">Generated Infographic</CardTitle>
-        <CardDescription className="mt-1">A visual breakdown of your document.</CardDescription>
+      <CardHeader className="flex flex-row items-center justify-between">
+        <div>
+          <CardTitle className="font-headline text-2xl">Generated Infographic</CardTitle>
+          <CardDescription className="mt-1">A visual breakdown of your document.</CardDescription>
+        </div>
+        <Button onClick={handleDownload} variant="outline" size="icon">
+            <Download className="h-5 w-5" />
+            <span className="sr-only">Download</span>
+        </Button>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="rounded-lg border bg-[#f5f1ec] p-4 sm:p-6 md:p-8 text-[#4a2e2a]">
+        <div ref={infographicRef} className="rounded-lg border bg-[#f5f1ec] p-4 sm:p-6 md:p-8 text-[#4a2e2a]">
           {/* Infographic Header */}
           <header className="flex flex-col items-center mb-8">
             <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider mb-4 opacity-70">
