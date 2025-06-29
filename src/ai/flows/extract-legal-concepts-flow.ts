@@ -5,7 +5,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'zod';
-import { KeyConceptSchema } from '@/ai/schemas';
+import { InfographicPointSchema } from '@/ai/schemas';
 
 const ExtractLegalConceptsInputSchema = z.object({
   legalText: z.string().describe('The legal text to analyze.'),
@@ -18,12 +18,11 @@ const ExtractLegalConceptsOutputSchema = z.object({
     .describe(
       "A concise but descriptive title for the infographic, capturing the text's central theme."
     ),
-  keyConceptA: KeyConceptSchema.describe(
-    "The primary argument, party, or concept."
-  ),
-  keyConceptB: KeyConceptSchema.describe(
-    'The opposing or corresponding argument, party, or concept.'
-  ),
+  points: z
+    .array(InfographicPointSchema)
+    .min(2, 'Must provide at least 2 key points.')
+    .max(4, 'Must provide no more than 4 key points.')
+    .describe('An array of 2 to 4 key points from the text.'),
   summary: z.string().describe('A detailed, one-paragraph summary of the entire legal text.'),
 });
 export type ExtractLegalConceptsOutput = z.infer<typeof ExtractLegalConceptsOutputSchema>;
@@ -42,9 +41,8 @@ const extractLegalConceptsPrompt = ai.definePrompt({
 
 You MUST extract the following information:
 1.  **Title:** A concise but descriptive title that captures the central theme of the text.
-2.  **Key Concept A:** Identify the primary argument, party, or concept. Provide a short, descriptive title for it. Then, list exactly two detailed supporting points or key arguments for this concept. These details should be complete sentences and fully explain the point.
-3.  **Key Concept B:** Identify the opposing or corresponding argument, party, or concept. Provide a short, descriptive title for it. Then, list exactly two detailed supporting points or key arguments for this concept, similar to Concept A.
-4.  **Summary:** A detailed, one-paragraph summary that comprehensively explains the entire legal text, its context, and its conclusion.
+2.  **Key Points:** Identify between 2 and 4 of the most critical points, arguments, or pieces of information from the text. For each point, provide a short title and a one-sentence description.
+3.  **Summary:** A detailed, one-paragraph summary that comprehensively explains the entire legal text, its context, and its conclusion.
 
 Ensure your output is structured as a JSON object matching the requested schema. All text must be grammatically perfect and free of spelling errors.
 

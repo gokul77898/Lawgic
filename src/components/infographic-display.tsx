@@ -92,29 +92,15 @@ export function InfographicDisplay({ data }: { data: InfographicData | null }) {
                 className="object-cover"
                 data-ai-hint="abstract colorful background"
             />
-            <div className="absolute inset-0 grid grid-rows-3 p-4 md:p-8 text-white">
-                {/* Title positioned at the top */}
-                <div className="row-span-1 flex items-center justify-center text-center">
-                    <h3 className="text-xl md:text-3xl font-bold font-headline leading-tight px-4 drop-shadow-lg">{data.title}</h3>
-                </div>
-
-                {/* Concepts container */}
-                <div className="row-span-2 grid grid-cols-2 gap-x-4 md:gap-x-8 items-start">
-                    {/* Left concept */}
-                    <div className="space-y-2 text-left drop-shadow-md">
-                        <p className="font-bold font-headline text-base md:text-xl">{data.keyConceptA.concept}</p>
-                        <ul className="text-xs md:text-base space-y-1">
-                          {data.keyConceptA.details.map((detail, i) => <li key={i}>&bull; {detail}</li>)}
-                        </ul>
-                    </div>
-                    
-                    {/* Right concept */}
-                    <div className="space-y-2 text-left drop-shadow-md">
-                        <p className="font-bold font-headline text-base md:text-xl">{data.keyConceptB.concept}</p>
-                        <ul className="text-xs md:text-base space-y-1">
-                          {data.keyConceptB.details.map((detail, i) => <li key={i}>&bull; {detail}</li>)}
-                        </ul>
-                    </div>
+            <div className="absolute inset-0 flex flex-col p-4 md:p-8 text-white bg-black/20">
+                <h3 className="text-xl md:text-3xl font-bold font-headline leading-tight text-center mb-6 drop-shadow-lg">{data.title}</h3>
+                <div className="grid grid-cols-2 gap-x-6 gap-y-4 flex-grow">
+                    {data.points.map((point, i) => (
+                      <div key={i} className="space-y-2 drop-shadow-md">
+                        <p className="font-bold font-headline text-base md:text-xl">{point.title}</p>
+                        <p className="text-xs md:text-base">{point.description}</p>
+                      </div>
+                    ))}
                 </div>
             </div>
           </div>
@@ -132,29 +118,19 @@ export function InfographicDisplay({ data }: { data: InfographicData | null }) {
 
         <Separator />
         
-        <div className="grid md:grid-cols-2 gap-6">
-          <div>
-            <h3 className="flex items-center gap-2 font-headline text-lg font-semibold text-primary">
+        <div>
+            <h3 className="flex items-center gap-2 font-headline text-lg font-semibold text-primary mb-3">
               <Lightbulb className="w-5 h-5" />
-              {data.keyConceptA.concept}
+              Key Points
             </h3>
-            <ul className="mt-3 space-y-2 text-sm list-disc list-inside">
-              {data.keyConceptA.details.map((item, index) => (
-                <li key={index} className="text-muted-foreground">{item}</li>
+            <div className="grid md:grid-cols-2 gap-6">
+              {data.points.map((point, index) => (
+                <div key={index}>
+                  <h4 className="font-semibold text-primary/90">{point.title}</h4>
+                  <p className="mt-1 text-sm text-muted-foreground">{point.description}</p>
+                </div>
               ))}
-            </ul>
-          </div>
-          <div>
-            <h3 className="flex items-center gap-2 font-headline text-lg font-semibold text-primary">
-              <Lightbulb className="w-5 h-5" />
-              {data.keyConceptB.concept}
-            </h3>
-            <ul className="mt-3 space-y-2 text-sm list-disc list-inside">
-              {data.keyConceptB.details.map((item, index) => (
-                <li key={index} className="text-muted-foreground">{item}</li>
-              ))}
-            </ul>
-          </div>
+            </div>
         </div>
 
       </CardContent>

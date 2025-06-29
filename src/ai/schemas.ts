@@ -1,11 +1,9 @@
 import {z} from 'zod';
 
-export const KeyConceptSchema = z.object({
-  concept: z
+export const InfographicPointSchema = z.object({
+  title: z.string().describe('A short, descriptive title for the key point.'),
+  description: z
     .string()
-    .describe('A short, descriptive title for the key concept.'),
-  details: z
-    .array(z.string())
-    .length(2, 'Must provide exactly 2 detailed supporting points for the concept.'),
+    .describe('A detailed, one-sentence explanation of the key point.'),
 });
-export type KeyConcept = z.infer<typeof KeyConceptSchema>;
+export type InfographicPoint = z.infer<typeof InfographicPointSchema>;
