@@ -29,7 +29,7 @@ export function InfographicDisplay({ data }: { data: InfographicData | null }) {
     );
   }
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     if (!infographicRef.current) {
         toast({
           title: "Download failed",
@@ -38,23 +38,35 @@ export function InfographicDisplay({ data }: { data: InfographicData | null }) {
         });
         return;
     }
-    toPng(infographicRef.current, { cacheBust: true, pixelRatio: 2 })
-      .then((dataUrl) => {
-        const link = document.createElement('a');
-        link.href = dataUrl;
-        link.download = 'lawgic-infographic.png';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      })
-      .catch((err) => {
-        console.error(err);
-        toast({
-          title: "Download failed",
-          description: "An error occurred while generating the image.",
-          variant: "destructive",
-        });
+    
+    try {
+      const fontUrl = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap';
+      const response = await fetch(fontUrl);
+      if (!response.ok) {
+        throw new Error('Failed to fetch font CSS');
+      }
+      const fontCss = await response.text();
+
+      const dataUrl = await toPng(infographicRef.current, { 
+        cacheBust: true, 
+        pixelRatio: 2,
+        fontEmbedCss: fontCss
       });
+      
+      const link = document.createElement('a');
+      link.href = dataUrl;
+      link.download = 'lawgic-infographic.png';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (err) {
+      console.error(err);
+      toast({
+        title: "Download failed",
+        description: "An error occurred while generating the image. This may be due to a network issue.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
